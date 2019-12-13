@@ -1,0 +1,244 @@
+syntax = "proto2";
+
+package com.maple.game.osee.proto.agent;
+
+import "OseePublicData.proto";
+
+/************************** 代理公共协议 *******************************/
+
+// 一级代理下面的团队详情
+message AgentTeamInfoProto {
+    optional int64 secAgentId = 1; // 二级代理(团长)ID
+    optional string nickname = 2; // 二级代理昵称
+    optional double contribution = 3; // 本周团队贡献
+    optional int64 memberCount = 4; // 团队人数
+}
+
+// 二级代理下的会员详情
+message AgentMemberInfoProto {
+    optional int64 memberId = 1; // 会员玩家id
+    optional string nickname = 2; // 会员昵称
+    optional double contribution = 3; // 会员本周的贡献
+}
+
+// 团队/个人日佣金详情
+message AgentCommissionProto {
+    optional string date = 1; // 时间
+    optional double totalCommission = 2; // 当日团队/个人总业绩
+}
+
+// 代理佣金兑换记录
+message AgentExchangeLogProto {
+    optional string date = 1; // 时间
+    optional int64 bronzeTorpedoNum = 2; // 青铜鱼雷数量
+    optional int64 silverTorpedoNum = 3; // 白银鱼雷数量
+    optional int64 goldTorpedoNum = 4; // 黄金鱼雷数量
+    optional int64 goldNum = 5; // 金币数量
+    optional int64 costCommission = 6; // 扣除的佣金
+}
+
+/************************** 代理传输协议 *******************************/
+
+// C_S_TTMY_AGENT_CHECK_REQUEST = 0x10050001; // 检查玩家是否为代理
+message AgentCheckRequest {
+    optional int64 playerId = 1; // 玩家id
+}
+
+// S_C_TTMY_AGENT_CHECK_RESPONSE = 0x20050001; // 检查玩家是否为代理返回
+message AgentCheckResponse {
+    optional int32 agentType = 1; // 玩家代理类型：1-一级代理，2-二级代理，3-普通玩家(即不为代理)，4-代理被禁用(即也不为代理)
+}
+
+// C_S_TTMY_AGENT_SHARE_INFO_REQUEST = 0x10050002; // 获取代理分享信息
+message AgentShareInfoRequest {
+    optional int64 playerId = 1; // 代理玩家id
+}
+
+// S_C_TTMY_AGENT_SHARE_INFO_RESPONSE = 0x20050002; // 获取代理分享信息
+message AgentShareInfoResponse {
+    optional string qrcode = 1; // 邀请二维码图片base64格式数据
+    optional string url = 2; // 邀请链接
+}
+
+// C_S_TTMY_AGENT_TEAM_INFO_REQUEST = 0x10050003; // 获取一级代理下面的团队信息
+message AgentTeamInfoRequest {
+    optional int64 playerId = 1; // 代理玩家id
+    optional int32 pageNo = 2; // 当前页码
+    optional int32 pageSize = 3; // 每页显示数据数量
+}
+
+// S_C_TTMY_AGENT_TEAM_INFO_RESPONSE = 0x20050003; // 团队信息返回
+message AgentTeamInfoResponse {
+    optional int64 memberTotalCount = 1; // 团队人数：即为二级代理数量(可做分页用)
+    repeated AgentTeamInfoProto teamInfo = 2; // 团队详情
+    optional int32 pageNo = 3; // 当前页码
+}
+
+// C_S_TTMY_AGENT_MEMBER_INFO_REQUEST = 0x10050004; // 获取二级代理下面会员详情
+message AgentMemberInfoRequest {
+    optional int64 playerId = 1; // 二级代理玩家id
+    optional int32 pageNo = 2; // 当前页码
+    optional int32 pageSize = 3; // 每页显示数据数量
+}
+
+// S_C_TTMY_AGENT_MEMBER_INFO_RESPONSE = 0x20050004; // 会员详情返回
+message AgentMemberInfoResponse {
+    optional int64 memberTotalCount = 1; // 会员总数(该数据也可以做分页用)
+    repeated AgentMemberInfoProto memberInfo = 2; // 会员详情
+    optional int32 pageNo = 3; // 当前页码
+}
+
+// C_S_TTMY_AGENT_COMMISSION_REQUEST = 0x10035005; // 我的佣金
+message AgentCommissionRequest {
+    optional int64 playerId = 1; // 代理玩家id
+    optional int32 pageNo = 2; // 当前页码
+    optional int32 pageSize = 3; // 每页显示数据数量
+}
+
+// S_C_TTMY_AGENT_COMMISSION_RESPONSE = 0x20035005; // 我的佣金返回
+message AgentCommissionResponse {
+    optional double totalCommission = 1; // 本周总业绩
+    repeated AgentCommissionProto commission = 2; // 佣金详情
+    optional int32 pageNo = 3; // 当前页码
+    optional int64 totalNum = 5; // 数据总数，分页使用
+}
+
+// C_S_TTMY_AGENT_COMMISSION_EXCHANGE_REQUEST = 0x10035006; // 佣金兑换
+message AgentCommissionExchangeRequest {
+    optional int64 playerId = 1; // 代理玩家id
+    optional int32 pageNo = 2; // 当前页码
+    optional int32 pageSize = 3; // 每页显示数据数量
+}
+
+// S_C_TTMY_AGENT_COMMISSION_EXCHANGE_RESPONSE = 0x20035006; // 佣金兑换返回
+message AgentCommissionExchangeResponse {
+    optional int64 playerId = 1; // 代理玩家id
+    optional double commission = 2; // 玩家可兑换佣金
+    repeated AgentExchangeLogProto exchangeLog = 3; // 代理佣金兑换记录
+    optional int32 pageNo = 4; // 当前页码
+    optional int64 totalNum = 5; // 数据总数，分页使用
+}
+
+// C_S_TTMY_AGENT_ITEM_EXCHANGE_REQUEST = 0x10035007; // 佣金兑换物品
+message AgentItemExchangeRequest {
+    optional int64 playerId = 1; // 代理玩家id
+    repeated ItemDataProto itemData = 2; // 要兑换的物品
+}
+
+// S_C_TTMY_AGENT_ITEM_EXCHANGE_RESPONSE = 0x20035007; // 佣金兑换物品
+message AgentItemExchangeResponse {
+    repeated ItemDataProto itemData = 1; // 兑换成功的物品
+}
+
+// C_S_AGENT_INFO_REQUEST = 0x10035008; // 代理信息请求
+message AgentInfoRequest {
+    optional int32 year = 1; // 年份 example: 2019. 2018.
+}
+
+// S_C_AGENT_INFO_RESPONSE = 0x20035008; // 代理信息返回
+message AgentInfoResponse {
+    optional int32 onlineCount = 1; // 在线人数
+    optional int32 dailyCount = 2; // 今日新增玩家
+    optional double dailyRecharge = 3; // 今日收益
+
+    optional int32 monthCount = 4; // 本月新增玩家
+    optional double monthRecharge = 5; // 本月收益
+
+    optional int32 totalCount = 6; // 总玩家数
+
+    optional int32 year = 7; // 年份
+    repeated MonthDataProto monthDatas = 8; // 月度数据
+
+    // 月度数据
+    message MonthDataProto {
+        optional int32 month = 1; // 月份
+        optional int32 count = 2; // 新增玩家人数
+        optional int64 recharge = 3; // 盈利
+    }
+}
+
+// C_S_AGENT_STATE_REQUEST = 0x10035009; // 代理状态请求
+message AgentStateRequest {
+    optional int64 playerId = 1; // 玩家id
+}
+
+// C_S_PLAYER_AGENT_INFO_REQUEST = 0x1003500A; // 玩家全民推广信息请求
+message PlayerAgentInfoRequest {
+}
+
+// S_C_PLAYER_AGENT_INFO_RESPONSE = 0x2003500A; // 玩家全民推广信息响应
+message PlayerAgentInfoResponse {
+    optional int32 dailyCount = 1; // 今日推广人数
+    optional int64 dailyMoney = 2; // 今日收益金币
+    optional int64 dailyDragonCrystal = 3; // 今日收益龙晶
+
+    optional int32 totalCount = 4; // 总推广人数
+    optional int64 totalMoney = 5; // 总收益金币
+    optional int64 totalDragonCrystal = 6; // 总收益龙晶
+
+    optional int64 currentMoney = 7; // 当前收益
+    optional int64 currentDragonCrystal = 8; // 当前收益龙晶
+}
+
+// C_S_PLAYER_AGENT_RECEIVE_REQUEST = 0x1003500B; // 玩家全民推广奖励领取请求
+message PlayerAgentReceiveRequest {
+}
+
+// S_C_PLAYER_AGENT_RECEIVE_RESPONSE = 0x2003500B; // 玩家全民推广奖励领取响应
+message PlayerAgentReceiveResponse {
+    optional int64 money = 1; // 领取金币
+    optional int64 dragonCrystal = 2; // 领取龙晶
+}
+
+// C_S_PLAYER_AGENT_ACTIVE_EXCHANGE_REQUEST = 0x1003500C; // 全民推广领取记录请求
+message PlayerAgentActiveExchangeRequest {
+    optional int32 pageNo = 1; // 当前页码
+    optional int32 pageSize = 2; // 每页显示数据数量
+}
+
+// S_C_PLAYER_AGENT_ACTIVE_EXCHANGE_RESPONSE = 0x2003500C; // 全民推广领取记录响应
+message PlayerAgentActiveExchangeResponse {
+    optional int32 pageNo = 1; // 当前页码
+    optional int64 totalNum = 2; // 数据总数
+    repeated PlayerAgentActiveExchangeProto receiveLogs = 3; // 领取记录
+
+    // 全民推广领取记录实体
+    message PlayerAgentActiveExchangeProto {
+        optional string receiveTime = 1; // 领取时间
+        optional int64 money = 2; // 金币
+        optional int64 dragonCrystal = 3; // 龙晶
+    }
+}
+
+// C_S_PLAYER_BIND_STATE_REQUEST = 0x1003500D; // 玩家绑定状态请求
+message PlayerBindStateRequest {
+}
+
+// S_C_PLAYER_BIND_STATE_RESPONSE = 0x2003500D; // 玩家绑定状态响应
+message PlayerBindStateResponse {
+    optional bool state = 1; // 绑定状态
+}
+
+// C_S_PLAYER_BIND_INFO_REQUEST = 0x1003500E; // 玩家绑定信息请求
+message PlayerBindInfoRequest {
+    optional int64 playerId = 1; // 目标玩家id
+}
+
+// S_C_PLAYER_BIND_INFO_RESPONSE = 0x2003500E; // 玩家绑定信息响应
+message PlayerBindInfoResponse {
+    optional bool enable = 1; // 是否可绑定
+    optional int64 playerId = 2; // 目标玩家id
+    optional string nickname = 3; // 昵称
+}
+
+// C_S_PLAYER_BIND_REQUEST = 0x1003500F; // 玩家绑定请求
+message PlayerBindRequest {
+    optional int64 playerId = 1; // 目标玩家id
+}
+
+// S_C_PLAYER_BIND_RESPONSE = 0x2003500F; // 玩家绑定响应
+message PlayerBindResponse {
+    optional bool success = 1; // 是否绑定成功
+    optional int64 playerId = 2; // 目标玩家id
+    optional string nickname = 3; // 昵称
+}

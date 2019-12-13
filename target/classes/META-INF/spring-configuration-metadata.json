@@ -1,0 +1,22 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.maple.game.osee.config.WeChatMPConfig",
+      "name": "wechat.mp",
+      "type": "com.maple.game.osee.config.WeChatMPConfig"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.maple.game.osee.config.WeChatMPConfig",
+      "name": "wechat.mp.appid",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.maple.game.osee.config.WeChatMPConfig",
+      "name": "wechat.mp.secret",
+      "type": "java.lang.String"
+    }
+  ]
+}

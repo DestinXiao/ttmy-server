@@ -1,0 +1,34 @@
+syntax = "proto2";
+
+import "OseePublicData.proto";
+
+package com.maple.game.osee.proto.goldenpig;
+
+// C_S_TTMY_GOLDEN_PIG_BREAK_REQUEST = 0x10036001; // 砸金猪请求
+message GoldenPigBreakRequest {
+    optional int32 index = 1; // 选用的锤子 0-免费 1-木锤 2-铁锤 3-金锤
+}
+
+// S_C_TTMY_GOLDEN_PIG_BREAK_RESPONSE = 0x20036001; // 砸金猪响应
+message GoldenPigBreakResponse {
+    repeated ItemDataProto items = 1; // 砸出的物品
+}
+
+// C_S_TTMY_GOLDEN_PIG_FREE_TIMES_REQUEST = 0x10036002; // 获取今日砸金猪免费次数请求
+message GoldenPigFreeTimesRequest {
+}
+
+// S_C_TTMY_GOLDEN_PIG_FREE_TIMES_RESPONSE = 0x20036002; // 获取今日砸金猪免费次数响应
+message GoldenPigFreeTimesResponse {
+    optional int32 times = 1; // 剩余次数
+}
+
+// C_S_TTMY_GOLDEN_PIG_HIT_LIMIT_REQUEST = 0x10037003; // 获取今日VIP可砸的次数上限请求
+message GoldenPigHitLimitRequest {
+}
+
+// S_C_TTMY_GOLDEN_PIG_HIT_LIMIT_RESPONSE = 0x20037003; // 获取今日VIP可砸的次数上限响应
+message GoldenPigHitLimitResponse {
+    optional int32 restLimit = 1; // 剩余限制次数
+    optional int32 totalLimit = 2; // 总共可砸次数
+}

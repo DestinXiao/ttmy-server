@@ -1,0 +1,70 @@
+syntax = "proto2";
+
+package com.maple.game.osee.proto;
+
+// 物品数据
+message ItemDataProto {
+    optional int32 itemId = 1; // 物品id
+    optional int64 itemNum = 2; // 物品数量
+}
+
+// 水果拉霸中奖线的数据
+message FruitLaBaWinLineDataProto {
+    repeated FruitLaBaSpotProto winLinePoints = 1; // 这条赢得线的点(也可以说是位置,连起来就是线)
+    optional int32 winNum = 2; // 这条线中奖个数   2个起步，5个封顶
+    optional int32 winType = 3; // 这条线中奖类型   0：默认是普通中奖  1：大奖，获得次数奖励
+    optional int64 lineGold = 4; // 这条线赢取的总金币
+    optional int32 lineMultiple = 5; // 中奖的倍数
+    optional int32 lineName = 6; // 这是哪儿条线
+}
+
+// 水果拉霸特殊线
+message FruitLaBaWinSpecialRewardProto {
+    repeated FruitLaBaSpotProto specialSpots = 1; // 所有特殊点
+    optional int32 specialType = 2; // 特殊线奖励类型   1:bonus  2:数字7
+    optional int64 winNum = 3; // 赢取的物品数量     数字7:奖励金币    bonus:奖励免费次数
+}
+
+// 水果拉霸点
+message FruitLaBaSpotProto {
+    optional int32 rankSpot = 1; // 横
+    optional int32 verticalSpot = 2; // 竖
+}
+
+// 水果拉霸抽奖次数奖励
+message FruitLaBaRewardInfoProto {
+    optional int32 achieveNum = 1; // 达到次数
+    optional int32 rewardGold = 2; // 奖励金币
+    optional int32 rewardLottery = 3; // 奖励点券
+    optional bool weatherReceive = 4; // 是否领取
+    optional int64 rewardId = 5; // id，用于领取
+}
+
+// 消息/邮件信息
+message MessageInfoProto {
+    optional int64 id = 1; // 消息id
+    optional string title = 2; // 标题
+    optional string content = 3; // 内容
+    optional int64 time = 4; // 发送时间(时间戳)
+    optional bool read = 5; // 是否已读
+    optional bool receive = 6; // 是否已领取
+    repeated ItemDataProto items = 7; // 消息附件列表
+}
+
+// 各个功能启用状态协议
+message FunctionStateProto {
+    optional int32 funcId = 1; // 功能id 1-n
+    optional bool state = 2; // 是否启用
+}
+
+// 任务信息协议
+message TaskInfoProto {
+    optional int64 taskId = 1; // 任务ID
+    optional string name = 2; // 任务名称
+    optional string info = 3; // 任务详情
+    optional int32 active = 4; // 活跃度
+    optional int32 progress = 5; // 当前进度数量
+    optional int32 target = 6; // 目标数量
+    optional bool receive = 7; // 是否已领取
+    repeated ItemDataProto rewards = 8; // 任务奖励
+}

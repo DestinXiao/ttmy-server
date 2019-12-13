@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.maple.game.osee.controller.fishing.FishingFishingUtilTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.517 s - in com.maple.game.osee.controller.fishing.FishingFishingUtilTest

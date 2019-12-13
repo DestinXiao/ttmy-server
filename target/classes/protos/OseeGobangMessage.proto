@@ -1,0 +1,126 @@
+syntax = "proto2";
+
+package com.maple.game.osee.proto.gobang;
+
+// C_S_OSEE_GOBANG_CREATE_ROOM_REQUEST = 0x10033001; // 五子棋创建房间请求
+message GobangCreateRoomRequest {
+}
+
+// C_S_OSEE_GOBANG_JOIN_ROOM_REQUEST = 0x10033002; // 五子棋加入房间请求
+message GobangJoinRoomRequest {
+	optional int32 roomCode = 1; // 房间号
+}
+
+// S_C_OSEE_GOBANG_JOIN_ROOM_RESPONSE = 0x20033002; // 五子棋加入房间响应
+message GobangJoinRoomResponse {
+	optional int32 roomCode = 1; // 房间号
+	optional int64 tuition = 2; // 学费
+}
+
+// S_C_OSEE_GOBANG_PLAYER_INFO_RESPONSE = 0x20033003; // 五子棋玩家数据响应
+message GobangPlayerInfoResponse {
+	optional GobangPlayerInfoProto playerInfo = 1; // 玩家数据
+}
+
+// S_C_OSEE_GOBANG_PLAYER_INFO_LIST_RESPONSE = 0x20033004; // 五子棋玩家数据列表响应
+message GobangPlayerInfoListResponse {
+	repeated GobangPlayerInfoProto playerInfos = 2; // 玩家数据列表
+}
+
+// C_S_OSEE_GOBANG_EXIT_ROOM_REQUEST = 0x10033005; // 五子棋退出房间请求
+message GobangExitRoomRequest {
+}
+
+// S_C_OSEE_GOBANG_EXIT_ROOM_RESPONSE = 0x20033005; // 五子棋退出房间响应
+message GobangExitRoomResponse {
+	optional int64 playerId = 1; // 退出房间玩家id
+}
+
+// C_S_OSEE_GOBANG_SET_TUITION_REQUEST = 0x10033006; // 五子棋设置学费请求
+message GobangSetTuitionRequest {
+	optional int64 tuition = 1; // 学费
+}
+
+// S_C_OSEE_GOBANG_SET_TUITION_RESPONSE = 0x20033006; // 五子棋设置学费响应
+message GobangSetTuitionResponse {
+	optional int64 tuition = 1; // 房间学费
+}
+
+// C_S_OSEE_GOBANG_READY_REQUEST = 0x10033007; // 五子棋准备请求
+message GobangReadyRequest {
+}
+
+// S_C_OSEE_GOBANG_READY_RESPONSE = 0x20033007; // 五子棋准备响应
+message GobangReadyResponse {
+	optional int64 playerId = 1; // 准备玩家id
+}
+
+// S_C_OSEE_GOBANG_GAME_START_RESPONSE = 0x20033008; // 五子棋游戏开始响应
+message GobangGameStartResponse {
+}
+
+// S_C_OSEE_GOBANG_ORDER_PLAYER_RESPONSE = 0x20033009; // 五子棋当前落子玩家响应
+message GobangOrderPlayerResponse {
+	optional int64 playerId = 1; // 当前落子玩家id
+}
+
+// C_S_OSEE_GOBANG_PLACE_PIECE_REQUEST = 0x1003300A; // 五子棋玩家落子请求
+message GobangPlacePieceRequest {
+	optional int32 x = 1; // 落子x坐标
+	optional int32 y = 2; // 落子y坐标
+}
+
+// S_C_OSEE_GOBANG_PLACE_PIECE_RESPONSE = 0x2003300A; // 五子棋玩家落子响应
+message GobangPlacePieceResponse {
+	optional int64 playerId = 1; // 落子玩家id
+	optional int32 x = 2; // 落子x坐标
+	optional int32 y = 3; // 落子y坐标
+}
+
+// S_C_OSEE_GOBANG_GAME_OVER_RESPONSE = 0x2003300B; // 五子棋游戏结束响应
+message GobangGameOverResponse {
+	optional bool result = 1; // 是否获胜
+	optional int64 winnerChange = 2; // 胜利者金币变化
+	optional int64 loserChange = 3; // 失败者金币变化
+}
+
+// C_S_OSEE_GOBANG_ADMIT_DEFEAT_REQUEST = 0x1003300C; // 五子棋认输请求
+message GobangAdmitDefeatRequest {
+}
+
+// S_C_OSEE_GOBANG_PLAYER_STATE_CHANGE_RESPONSE = 0x2003300D; // 五子棋玩家状态变化响应
+message GobangPlayerStateChangeResponse {
+	optional int64 playerId = 1; // 玩家id
+	optional bool online = 2; // 是否在线
+}
+
+// S_C_OSEE_GOBANG_RECONNECT_RESPONSE = 0x2003300E; // 五子棋玩家重连响应
+message GobangReconnectResponse {
+	optional int32 roomCode = 1; // 房间号
+	optional int64 tuition = 2; // 学费
+	repeated GobangPlayerInfoProto playerInfos = 3; // 玩家数据列表
+	optional int32 gameState = 4; // 游戏状态 0:准备 1:落子 2:结束
+	optional int64 orderPlayerId = 5; // 当前落子玩家id
+	repeated GobangPlacePiece placePieces = 6; // 落子列表
+}
+
+// 五子棋玩家数据
+message GobangPlayerInfoProto {
+	optional int64 playerId = 1; // 玩家id
+	optional string name = 2; // 玩家昵称
+	optional int32 headIndex = 3; // 头像序号
+	optional string headUrl = 4; // 头像地址
+	optional int32 sex = 5; // 性别
+	optional int64 money = 6; // 携带金币
+	optional int32 seat = 7; // 座位
+	optional bool online = 8; // 是否在线
+	optional int32 vipLevel = 9; // vip等级
+	optional bool ready = 10; // 是否已准备
+}
+
+// 五子棋落子数据
+message GobangPlacePiece {
+	optional int64 playerId = 1; // 落子玩家id
+	optional int32 x = 2; // 落子x坐标
+	optional int32 y = 3; // 落子y坐标
+}

@@ -1,0 +1,246 @@
+syntax = "proto2";
+
+import "OseePublicData.proto";
+
+package com.maple.game.osee.proto.fightten;
+
+// ***************************** 拼十公共协议 ********************************
+
+// 拼十场次信息
+message TenFieldInfoProto {
+    optional int64 enterMoney = 1; // 入场金币限制
+    optional int32 type = 2; // 场次类型：0-初、1-中、2-高
+}
+
+// 拼十玩家信息
+message TenRoomPlayerInfoProto {
+    optional int64 playerId = 1; // 玩家id
+    optional string name = 2; // 玩家昵称
+    optional int32 headIndex = 3; // 头像序号
+    optional string headUrl = 4; // 头像地址
+    optional int32 sex = 5; // 性别
+    optional int64 money = 6; // 携带金币
+    optional int32 seat = 7; // 座位
+    optional int32 readyType = 8; // 准备状态 0-已准备，1-未准备
+}
+
+// 拼十对局结束时玩家的数据
+message TenRoundOverPlayerDataProto {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 seat = 2; // 座位
+    optional int32 cardType = 3; // 牌型 10=同花顺,9=炸弹,8=葫芦,7=同花,6=顺子,5=双十,4=十带九,3=十带八,2=十带七,1=十带一到十带六,0=散牌
+    repeated int32 cards = 4; // 所有手牌
+    optional bool win = 5; // 是否赢了
+    optional int64 winMoney = 6; // 输/赢的钱
+    optional int64 myMoney = 7; // 目前身上的金币
+}
+
+// 拼十任务详情数据协议
+message TenTaskInfoProto {
+    optional int64 taskId = 1; // 任务id
+    optional string taskName = 2; // 任务名称
+    optional string taskInfo = 3; // 任务说明
+    optional int32 targetNum = 4; // 任务目标数量
+    optional int32 nowNum = 5; // 任务当前完成数量
+    optional int32 taskState = 6; // 任务状态：0-未完成，1-已完成，但是待领取，2-已领取
+    repeated ItemDataProto rewards = 7; // 任务奖励
+}
+
+// 玩家抢庄信息
+message TenFightBankerProto {
+    optional int64 playerId = 1; // 已抢庄家的id
+    optional int32 fightMultiple = 2; // 已抢的倍数
+}
+
+// 玩家下注信息
+message TenBetMoneyProto {
+    optional int64 playerId = 1; // 已抢下注的id
+    optional int64 betMoney = 2; // 已下注的钱
+}
+
+// ***************************************************************************
+
+// C_S_OSEE_TEN_GET_FIELD_LIST_REQUEST = 0x10032001; // 获取拼十所有场次的信息
+message TenGetFieldListRequest {
+}
+
+// S_C_OSEE_TEN_GET_FIELD_LIST_RESPONSE = 0x20032001; // 拼十所有场次的信息
+message TenGetFieldListResponse {
+    repeated TenFieldInfoProto fieldInfos = 1; // 所有场次信息
+}
+
+// C_S_OSEE_TEN_JOIN_ROOM_REQUEST = 0x10032002; // 加入拼十房间请求
+message TenJoinRoomRequest {
+    optional int32 fieldType = 1; // 加入的场次类型
+}
+
+// S_C_OSEE_TEN_ROOM_INFO_RESPONSE = 0x20032003; // 拼十房间信息
+message TenRoomInfoResponse {
+    optional int32 roomCode = 1; // 房间号
+    optional int32 fieldType = 2; // 房间所属场次类型
+}
+
+// S_C_OSEE_TEN_ROOM_PLAYER_INFO_RESPONSE = 0x20032004; // 发送房间内玩家信息给房间内所有玩家
+message TenRoomPlayerInfoResponse {
+    optional TenRoomPlayerInfoProto playerInfo = 1; // 玩家信息
+}
+
+// S_C_OSEE_TEN_ROOM_PLAYER_INFO_LIST_RESPONSE = 0x20032005; // 发送房间内所有玩家信息给某个玩家
+message TenRoomPlayerInfoListResponse {
+    repeated TenRoomPlayerInfoProto playerInfos = 1; // 房间内所有玩家的信息
+}
+
+// S_C_OSEE_TEN_CHANGE_ROOM_STATE_RE-SPONSE = 0x20032006; // 房间状态改变响应
+message TenChangeRoomStateResponse {
+    optional int32 roomState = 1; // 房间当前状态
+    optional int32 stateRestTime = 2; // 当前状态剩余持续时长：秒
+}
+
+// C_S_OSEE_TEN_READY_ROOM_REQUEST = 0x10032007; // 请求准备
+message TenReadyRoomRequest {
+    optional int32 readyType = 1; // 准备类型：0-准备，1-取消准备(拼十内暂时不用)
+}
+
+// S_C_OSEE_TEN_READY_ROOM_RESPONSE = 0x20032007; // 准备响应
+message TenReadyRoomResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 readyType = 2; // 准备类型
+}
+
+// S_C_OSEE_TEN_DISPATCH_CARD_RESPONSE = 0x20032008; // 发牌响应
+message TenDispatchCardResponse {
+    optional int64 playerId = 1; // 玩家id
+    repeated int32 cards = 2; // 玩家手牌
+
+    optional int32 seat = 3; // 玩家座位：0-最多人数减一
+}
+
+// C_S_OSEE_TEN_FIGHT_BANKER_REQUEST = 0x10032009; // 抢庄请求
+message TenFightBankerRequest {
+    optional int32 fightMultiple = 1; // 抢庄倍数：1-4，-1=不抢
+}
+
+// S_C_OSEE_TEN_FIGHT_BANKER_RESPONSE = 0x20032009; // 抢庄响应
+message TenFightBankerResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 fightMultiple = 2; // 抢庄倍数：1-4，-1=不抢
+}
+
+// S_C_OSEE_TEN_SELECT_BANKER_RESPONSE = 0x20032010; // 庄家选择响应
+message TenSelectBankerResponse {
+    optional int64 bankerId = 1; // 庄家id
+    optional int32 bankerFightMultiple = 2; // 庄家抢庄倍数
+    repeated int64 randomPlayerIdList = 3; // 随机选庄的玩家id列表，长度为0就表示不进行随机选，大于1就表示要进行随机动画选庄家
+}
+
+// S_C_OSEE_TEN_BET_MONEY_LIST_RESPONSE = 0x20032011; // 可下注金额列表
+message TenBetMoneyListResponse {
+    repeated int64 betMoneyList = 1; // 可下注金额列表
+}
+
+// C_S_OSEE_TEN_BET_MONEY_REQUEST = 0x10032012; // 下注请求
+message TenBetMoneyRequest {
+    optional int32 betMoneyIndex = 1; // 玩家下注选择的金额序号：0-3
+}
+
+// S_C_OSEE_TEN_BET_MONEY_RESPONSE = 0x20032012; // 下注响应
+message TenBetMoneyResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int64 betMoney = 2; // 玩家下注金额
+}
+
+// S_C_OSEE_TEN_SEND_LAST_CARD_RESPONSE = 0x20032013; // 发送最后一张牌的响应
+message TenSendLastCardResponse {
+    optional int32 lastCard = 1; // 最后一张牌
+}
+
+// C_S_OSEE_TEN_SEE_CARD_REQUEST = 0x10032014; // 看牌请求
+message TenSeeCardRequest {
+}
+
+// S_C_OSEE_TEN_SEE_CARD_RESPONSE = 0x20032014; // 看牌响应
+message TenSeeCardResponse {
+    optional int64 playerId = 1; // 看牌玩家id
+}
+
+// C_S_OSEE_TEN_RUB_CARD_REQUEST = 0x10032015; // 搓牌请求
+message TenRubCardRequest {
+}
+
+// S_C_OSEE_TEN_RUB_CARD_RESPONSE = 0x20032015; // 搓牌响应
+message TenRubCardResponse {
+    optional int64 playerId = 1; // 搓牌玩家id
+}
+
+// S_C_OSEE_TEN_ROUND_OVER_RESPONSE = 0x20032016; // 拼十房间对局结束响应
+message TenRoundOverResponse {
+    repeated TenRoundOverPlayerDataProto playerData = 1; // 所有玩家的结算数据
+}
+
+// C_S_OSEE_TEN_LEAVE_ROOM_REQUEST = 0x10032017; // 离开房间请求
+message TenLeaveRoomRequest {
+}
+
+// S_C_OSEE_TEN_LEAVE_ROOM_RESPONSE = 0x20032017; // 离开房间响应
+message TenLeaveRoomResponse {
+    optional int64 playerId = 1; // 离开房间的玩家id
+}
+
+// C_S_OSEE_TEN_CHANGE_ROOM_REQUEST = 0x10032018; // 更换房间请求
+message TenChangeRoomRequest {
+}
+
+// C_S_OSEE_TEN_TASK_LIST_REQUEST = 0x10032019; // 获取任务列表请求
+message TenTaskListRequest {
+}
+
+// S_C_OSEE_TEN_TASK_LIST_RESPONSE = 0x20032019; // 获取任务列表的响应
+message TenTaskListResponse {
+    repeated TenTaskInfoProto taskInfos = 1; // 玩家任务列表
+}
+
+// C_S_OSEE_TEN_GET_TASK_REWARD_REQUEST = 0x10032020; // 获取任务奖励的请求
+message TenGetTaskRewardRequest {
+    optional int64 taskId = 1; // 任务的id
+}
+
+// S_C_OSEE_TEN_RECONNECT_RESPONSE = 0x20032021; // 重连响应
+message TenReconnectResponse {
+    optional int32 roomCode = 1; // 房间号
+
+    optional int64 maxBetMoney = 2; // 最高下注
+    optional int32 roomState = 3; // 房间当前状态
+    optional int32 stateRestTime = 4; // 当前状态剩余持续时长：秒
+
+    repeated int64 readyPlayers = 5; // 准备阶段
+    optional int32 seat = 6; // 座位号：0-最多人数减一
+    repeated int32 cards = 7; // 开始发牌(发牌阶段)
+
+    repeated TenFightBankerProto fightedBankerProto = 8; // 已抢庄的玩家数据(抢庄阶段)
+    optional int64 bankerId = 9; // 选中的庄家id
+    repeated TenFightBankerProto fightBankerProto = 10; // (当bankerId有值时)广播全部玩家的抢庄倍数
+
+    repeated int64 aniPlayerId = 11; // 参与随机抢庄的所有玩家id(动画状态)
+
+    repeated TenBetMoneyProto betMoneyProto = 12; // 已下注的玩家(下注阶段)
+    repeated int64 betMoneyList = 13; // 下注列表(下注阶段)
+
+    optional int32 lastCard = 14; // 自己最后一张牌的值(看牌阶段)
+
+    repeated int64 seeOrRubCardPlayer = 15; // 已看牌或搓牌的玩家
+
+    repeated TenRoundOverPlayerDataProto roundOverProto = 16; // 一局结算
+}
+
+// C_S_OSEE_TEN_GIVE_GIFT_REQUEST = 0x10032022; // 玩家赠送礼物请求
+message TenGiveGiftRequest {
+    optional int64 toPlayerId = 1; // 被赠送的目标玩家的id
+    optional int32 giftType = 2; // 礼物类型
+}
+
+// S_C_OSEE_TEN_GIVE_GIFT_RESPONSE = 0x20032022; // 玩家赠送礼物响应
+message TenGiveGiftResponse {
+    optional int64 toPlayerId = 1; // 被赠送的目标玩家的id
+    optional int64 fromPlayerId = 2; // 赠送礼物的玩家id
+    optional int32 giftType = 3; // 礼物类型
+}

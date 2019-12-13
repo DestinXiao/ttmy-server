@@ -1,0 +1,81 @@
+syntax = "proto2";
+
+import "OseePublicData.proto";
+
+package com.maple.game.osee.proto.fruit;
+
+//C_S_PLAYER_ENTER_FRUITLABA_ROOM_REQUEST=0x10034001;// 进入水果拉霸房间请求
+message PlayerEnterFruitLaBaRoomRequest {
+    optional int32 roomType = 1;
+}
+
+//S_C_PLAYER_ENTER_FRUITLABA_ROOM_RESPONSE=0x20034001;// 进入水果拉霸房间信息返回
+message PlayerEnterFruitLaBaRoomResponse {
+    optional int64 poolGoldNum = 1; // 游戏奖池金币
+    optional int32 remaindFreeDrawNum = 2; // 剩余抽奖次数
+    optional int64 remaindFreeDrawGold = 3; // 免费抽奖时押注金币
+    optional int32 remaindFreeDrawLineSize = 4; // 免费抽奖时押注线数量
+}
+
+//C_S_FRUITLABA_START_RUN_REQUEST = 0x10034002;// 开始下注运行请求
+message FruitLaBaStartRunRequest {
+    repeated int32 lines = 1; // 下注的连接线，有1,2,3....
+    optional int32 singleGold = 2; // 单注金币
+}
+
+//S_C_FRUITLABA_START_RUN_RESPONSE = 0x20034002;// 下注运行数据返回
+message FruitLaBaStartRunResponse {
+    repeated int32 spots = 1; // 顺序点的集合，用于前端显示水果，顺序很重要
+    optional int64 winGold = 2; // 赢得的金币数量
+    repeated FruitLaBaWinLineDataProto winLines = 3; // 下注赢得线数据,发送给前端，就不用前端计算了
+    repeated FruitLaBaWinSpecialRewardProto specialRewards = 4; // 特殊线赢取奖励
+    optional int32 remaindFreeDrawNum = 5; // 剩余抽奖次数
+    optional int32 localRotateNum = 6; // 当前旋转次数
+    optional int64 beforTotalGoldNum = 7; // 旋转时剩余金币
+    optional int64 afterTotalGoldNum = 8; // 旋转后剩余金币
+    optional int64 remaindFreeDrawGold = 9; // 免费抽奖时押注金币
+    optional int32 remaindFreeDrawLineSize = 10; // 免费抽奖时押注线数量
+}
+
+//S_C_FRUITLABA_REWARD_POOL_GOLDNUM_RESPONSE = 0x20034003;// 返回水果拉霸的奖池总金币
+message FruitLaBaRewardPoolGoldNumResponse {
+    optional int64 poolGoldNum = 1; // 游戏奖池金币
+}
+
+//C_S_FRUITLABA_LEAVE_ROOM_REQUEST = 0x10034004;// 水果拉霸离开房间请求
+message FruitLaBaLeaveRoomRequest {
+
+}
+
+//S_C_FRUITLABA_LEAVE_ROOM_RESPONSE = 0x20034004;// 水果拉霸离开房间返回
+message FruitLaBaLeaveRoomResponse {
+
+}
+
+//S_C_FRUITLABA_TASK_INFO_RESPONSE = 0x20034005; // 任务信息
+message FruitLabaTaskInfoResponse {
+    repeated FruitLaBaRewardInfoProto rewardInfos = 1; // 根据转的次数得到的奖励
+    optional FruitLaBaRewardInfoProto nextReward = 2; // 下一个转的次数所能得到的奖励
+}
+
+//C_S_FRUITLABA_RECEIVE_TASK_REQUEST = 0x10034006; // 领取任务请求
+message FruitLabaReceiveTaskRequest {
+    optional int64 rewardId = 5; // id，用于领取
+}
+
+//S_C_FRUITLABA_RECEIVE_TASK_RESPONSE = 0x20034006; // 领取任务结果返回
+message FruitLabaReceiveTaskResponse {
+    optional int64 rewardId = 1; // id，用于删除界面上的那条数据
+}
+
+// C_S_EXCHANGE_DRAGON_CRYSTAL_REQUEST = 0x10034007; // 兑换龙晶请求
+message ExchangeDragonCrystalRequest {
+    repeated ItemDataProto items = 1; // 兑换的鱼雷数量
+    optional int32 exchangeType = 2; // 兑换类型 0-鱼雷兑换龙晶 1-龙晶兑换鱼雷
+}
+
+// S_C_EXCHANGE_DRAGON_CRYSTAL_RESPONSE = 0x20034007; // 兑换龙晶响应
+message ExchangeDragonCrystalResponse {
+    repeated ItemDataProto items = 1; // 兑换的鱼雷数量
+    optional int64 dragonCrystalCount = 2; // 龙晶数量
+}

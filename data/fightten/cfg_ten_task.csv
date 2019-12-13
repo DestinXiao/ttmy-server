@@ -1,0 +1,6 @@
+id,name,info,targetNum,rewards
+编号,任务名称,任务说明,目标次数,奖励
+1,二龙戏珠,打出十带二牌型5次,5,"{""taskRewards"":[{""itemId"":1,""itemNum"":2000},{""itemId"":3,""itemNum"":10}]}"
+2,九九同心,打出十带九牌型5次,5,"{""taskRewards"":[{""itemId"":1,""itemNum"":1000},{""itemId"":3,""itemNum"":5}]}"
+3,七星高照,打出十带七牌型1次,1,"{""taskRewards"":[{""itemId"":1,""itemNum"":1000},{""itemId"":3,""itemNum"":5}]}"
+4,一帆风顺,打出十带一牌型5次,5,"{""taskRewards"":[{""itemId"":1,""itemNum"":2000},{""itemId"":3,""itemNum"":10}]}"

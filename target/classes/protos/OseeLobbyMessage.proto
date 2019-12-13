@@ -1,0 +1,563 @@
+syntax = "proto2";
+
+package com.maple.game.osee.proto.lobby;
+
+import "OseePublicData.proto";
+
+// =======================================================
+
+// 赠送记录数据协议
+message GiveGiftLogProto {
+    optional int64 toId = 1; // 被赠人ID
+    optional string toName = 2; // 被赠人昵称
+    optional string giftName = 3; // 赠送的道具名称
+    optional int64 giftNum = 4; // 道具数量
+    optional string time = 5; // 赠送时间
+}
+
+// 兑换记录数据协议
+message LotteryExchangeLogProto {
+    optional string date = 1; // 时间
+    optional string shopName = 2; // 商品名称
+    optional int32 state = 3; // 兑换状态 0-待发货 1-已发货 2-已拒绝
+    optional StockInfoProto info = 4; // 订单物品详情数据
+}
+
+// 物品详细信息
+message StockInfoProto {
+    optional string number = 1; // 卡号
+    optional string password = 2; // 卡密
+}
+
+// =======================================================
+
+// C_S_OSEE_PLAYER_MONEY_REQUEST = 0x10030001; // 获取玩家货币请求
+message PlayerMoneyRequest {
+}
+
+// S_C_OSEE_PLAYER_MONEY_RESPONSE = 0x20030001; // 获取玩家货币返回
+message PlayerMoneyResponse {
+    optional int64 money = 1; // 金币
+    optional int64 lottery = 2; // 奖券
+    optional int64 diamond = 3; // 钻石
+    optional int64 bankMoney = 4; // 银行金币
+    optional int64 dragonCrystal = 5; // 龙晶
+}
+
+// C_S_OSEE_VIP_LEVEL_REQUEST = 0x10030002; // 获取玩家vip等级请求
+message VipLevelRequest {
+}
+
+// S_C_OSEE_VIP_LEVEL_RESPONSE = 0x20030002; // 获取玩家vip等级返回
+message VipLevelResponse {
+    optional int32 vipLevel = 1; // vip等级
+    optional int64 totalMoney = 2; // 当前累计充值
+    optional int64 nextLevel = 3; // 距离下级充值
+}
+
+// C_S_OSEE_NEXT_LOTTERY_DRAW_FEE_REQUEST = 0x10030003; // 获取下次抽奖费用请求
+message NextLotteryDrawFeeRequest {
+}
+
+// S_C_OSEE_NEXT_LOTTERY_DRAW_FEE_RESPONSE = 0x20030003; // 获取下次抽奖费用返回
+message NextLotteryDrawFeeResponse {
+    optional int32 freeCount = 1; // 免费次数
+}
+
+// C_S_OSEE_LOTTERY_DRAW_REQUEST = 0x10030004; // 转盘抽奖请求
+message LotteryDrawRequest {
+}
+
+// S_C_OSEE_LOTTERY_DRAW_RESPONSE = 0x20030004; // 转盘抽奖返回
+message LotteryDrawResponse {
+    optional int32 index = 1; // 奖品序号
+}
+
+// C_S_OSEE_SIGNED_TIMES_REQUEST = 0x10030005; // 获取已签到次数请求
+message SignedTimesRequest {
+}
+
+// S_C_OSEE_SIGNED_TIMES_RESPONSE = 0x20030005; // 获取已签到次数返回
+message SignedTimesResponse {
+    optional int32 times = 1; // 本周已签到次数
+    optional bool signed = 2; // 今日是否已签到
+    optional bool nowSign = 3; // 是否为当前签到
+}
+
+// C_S_OSEE_DAILY_SIGN_REQUEST = 0x10030006; // 每日签到请求
+message DailySignRequest {
+}
+
+// C_S_OSEE_CHECK_BANK_PASSWORD_REQUEST = 0x10030007; // 检查保险箱密码请求
+message CheckBankPasswordRequest {
+    optional string password = 1; // 保险箱密码(md5)
+}
+
+// S_C_OSEE_CHECK_BANK_PASSWORD_RESPONSE = 0x20030007; // 检查保险箱密码返回
+message CheckBankPasswordResponse {
+    optional string password = 1; // 保险箱密码(md5)
+    optional bool success = 2; // 密码是否正确
+}
+
+// C_S_OSEE_SAVE_MONEY_REQUEST = 0x10030008; // 存取金币请求
+message SaveMoneyRequest {
+    optional string password = 1; // 保险箱密码(md5)
+    optional int64 money = 2; // 金额 >0:存入金币 <0:取出金币
+}
+
+// S_C_OSEE_SAVE_MONEY_RESPONSE = 0x20030008; // 存取金币返回
+message SaveMoneyResponse {
+    optional bool success = 1; // 存取金币结果
+}
+
+// C_S_OSEE_CHANGE_BANK_PASSWORD_REQUEST = 0x10030009; // 修改保险箱密码请求
+message ChangeBankPasswordRequest {
+    optional string oldPassword = 1; // 旧密码
+    optional string newPassword = 2; // 新密码
+}
+
+// S_C_OSEE_CHANGE_BANK_PASSWORD_RESPONSE = 0x20030009; // 修改保险箱密码返回
+message ChangeBankPasswordResponse {
+    optional bool success = 1; // 修改密码结果
+}
+
+// C_S_OSEE_GET_RANKING_LIST_REQUEST = 0x1003000A; // 获取排行榜数据请求
+message GetRankingListRequest {
+    optional int32 rankingType = 1; // 排行榜类型 0:金币榜 1:vip榜
+}
+
+// S_C_OSEE_GET_RANKING_LIST_RESPONSE = 0x2003000A; // 获取排行榜数据请求
+message GetRankingListResponse {
+    optional int32 rankingType = 1; // 排行榜类型 0:金币榜 1:vip榜 2:鱼雷榜
+    optional int32 myRanking = 2; // 我的排行 0：未入榜 >0：排名
+    repeated RankingDataProto rankingList = 3; // 排行榜数据
+}
+
+// C_S_OSEE_GET_LOTTERY_SHOP_LIST_REQUEST = 0x1003000B; // 获取奖券商品列表请求
+message GetLotteryShopListRequest {
+}
+
+// S_C_OSEE_GET_LOTTERY_SHOP_LIST_RESPONSE = 0x2003000B; // 获取奖券商品列表返回
+message GetLotteryShopListResponse {
+    repeated LotteryShopItemProto shopItems = 1; // 商品列表
+}
+
+// C_S_OSEE_BUY_SHOP_ITEM_REQUEST = 0x1003000C; // 购买商城商品请求
+message BuyShopItemRequest {
+    optional int64 index = 1; // 商品序号(1-n)
+}
+
+// S_C_OSEE_BUY_SHOP_ITEM_RESPONSE = 0x2003000C; // 购买商城商品返回
+message BuyShopItemResponse {
+    optional bool success = 1; // 是否成功
+    optional int64 index = 2; // 商品序号
+}
+
+// C_S_OSEE_SERVICE_WECHAT_REQUEST = 0x1003000D; // 客服微信请求
+message ServiceWechatRequest {
+}
+
+// S_C_OSEE_SERVICE_WECHAT_RESPONSE = 0x2003000D; // 客服微信返回
+message ServiceWechatResponse {
+    optional string wechat = 1; // 微信号
+    optional string qrcode = 2; // 二维码url
+}
+
+// C_S_OSEE_NOTICE_LIST_REQUEST = 0x1003000E; // 公告列表请求
+message NoticeListRequest {
+}
+
+// S_C_OSEE_NOTICE_LIST_RESPONSE = 0x2003000E; // 公告列表返回
+message NoticeListResponse {
+    repeated NoticeProto notice = 1; // 公告列表
+}
+
+// C_S_OSEE_USE_CDK_REQUEST = 0x1003000F; // 使用cdk请求
+message UseCdkRequest {
+    optional string cdk = 1; // cdk
+}
+
+// S_C_OSEE_USE_CDK_RESPONSE = 0x2003000F; // 使用cdk返回
+message UseCdkResponse {
+    repeated ItemDataProto itemData = 1; // 物品数据
+}
+
+// C_S_OSEE_AUTHENTICATE_INFO_REQUEST = 0x10030010; // 实名认证信息请求
+message AuthenticateInfoRequest {
+}
+
+// S_C_OSEE_AUTHENTICATE_INFO_RESPONSE = 0x20030010; // 实名认证信息返回
+message AuthenticateInfoResponse {
+    optional string realName = 1; // 真实姓名
+    optional string idCardNum = 2; // 身份证号
+    optional string phoneNum = 3; // 手机号
+}
+
+// C_S_OSEE_SUBMIT_AUTHENTICATE_REQUEST = 0x10030011; // 提交实名认证信息请求
+message SubmitAuthenticateRequest {
+    optional string realName = 1; // 真实姓名
+    optional string idCardNum = 2; // 身份证号
+    optional string phoneNum = 3; // 手机号
+    optional int32 checkCode = 4; // 手机验证码
+}
+
+// S_C_OSEE_SUBMIT_AUTHENTICATE_RESPONSE = 0x20030011; // 提交实名认证信息返回
+message SubmitAuthenticateResponse {
+    repeated ItemDataProto rewards = 1; // 奖励物品数据
+}
+
+// C_S_OSEE_AUTHENTICATE_PHONE_CHECK_REQUEST = 0x10030012; // 实名认证手机验证请求
+message AuthenticatePhoneCheckRequest {
+    optional string phoneNum = 1; // 手机号
+}
+
+// S_C_OSEE_AUTHENTICATE_PHONE_CHECK_RESPONSE = 0x20030012; // 实名认证手机验证返回
+message AuthenticatePhoneCheckResponse {
+    optional bool result = 1; // 发送结果
+}
+
+// C_S_OSEE_GET_RESET_PASSWORD_PHONE_NUM_REQUEST = 0x10030013; // 获取重置密码手机号请求
+message GetResetPasswordPhoneNumRequest {
+    optional string username = 1; // 用户名
+}
+
+// S_C_OSEE_GET_RESET_PASSWORD_PHONE_NUM_RESPONSE = 0x20030013; // 获取重置密码手机号返回
+message GetResetPasswordPhoneNumResponse {
+    optional string username = 1; // 用户名
+    optional string phoneNum = 2; // 手机号
+}
+
+// C_S_OSEE_RESET_PASSWORD_PHONE_CHECK_REQUEST = 0x10030014; // 重置用户密码手机验证请求
+message ResetPasswordPhoneCheckRequest {
+    optional string username = 1; // 用户名
+}
+
+// S_C_OSEE_RESET_PASSWORD_PHONE_CHECK_RESPONSE = 0x20030014; // 重置用户密码手机验证返回
+message ResetPasswordPhoneCheckResponse {
+    optional bool result = 1; // 发送结果
+}
+
+// C_S_OSEE_RESET_PASSWORD_REQUEST = 0x10030015; // 重置密码请求
+message ResetPasswordRequest {
+    optional string username = 1; // 用户名
+    optional int32 checkCode = 2; // 验证码
+    optional string password = 3; // 密码
+}
+
+// S_C_OSEE_RESET_PASSWORD_RESPONSE = 0x20030015; // 重置密码返回
+message ResetPasswordResponse {
+    optional bool result = 1; // 发送结果
+}
+
+// C_S_OSEE_WECHAT_SHARE_REQUEST = 0x10030016; // 微信分享请求
+message WechatShareRequest {
+}
+
+// S_C_OSEE_WECHAT_SHARE_RESPONSE = 0x20030016; // 微信分享返回
+message WechatShareResponse {
+    optional int64 rewardMoney = 1; // 获得金币
+}
+
+// 排行榜数据
+message RankingDataProto {
+    optional int64 id = 1; // 玩家id
+    optional string nickname = 2; // 昵称
+    optional int32 level = 3; // 等级
+    optional int32 vipLevel = 4; // vip等级
+    optional int64 money = 5; // 金币
+    optional int64 goldTorpedo = 6; // 黄金鱼雷
+    optional string head = 7; // 头像
+}
+
+// 商品数据
+message LotteryShopItemProto {
+    optional int64 lottery = 1; // 奖券数量
+    optional string name = 2; // 商品名
+    optional string img = 3; // 商品图片
+    optional int32 rest = 4; // 剩余数量 -1:无限制
+    optional int64 id = 5; // 商品id
+}
+
+// 游戏公告数据
+message NoticeProto {
+    optional string title = 1; // 公告标题
+    optional string content = 2; // 公告内容
+}
+
+// C_S_TTMY_ACCOUNT_PHONE_CHECK_REQUEST = 0x10030017; // 设置账号手机号验证请求
+message AccountPhoneCheckRequest {
+    optional string phoneNum = 1; // 手机号码
+}
+
+// S_C_TTMY_ACCOUNT_PHONE_CHECK_RESPONSE = 0x20030017; // 设置账号时手机号验证返回
+message AccountPhoneCheckResponse {
+    optional bool result = 1; // 短信发送结果
+}
+
+// C_S_TTMY_ACCOUNT_SET_REQUEST = 0x10030018; // 设置账号请求
+message AccountSetRequest {
+    optional string phoneNum = 1; // 手机号，即账号
+    optional int32 checkCode = 2; // 验证码
+    optional string password = 3; // 密码
+}
+
+// S_C_TTMY_ACCOUNT_SET_RESPONSE = 0x20030018; // 设置账号返回
+message AccountSetResponse {
+    repeated ItemDataProto rewards = 1; // 奖励物品数据
+}
+
+// C_S_TTMY_PLAYER_PROP_REQUEST = 0x10030019; // 玩家道具信息请求
+message PlayerPropRequest {
+}
+
+// S_C_TTMY_PLAYER_PROP_RESPONSE = 0x20030019; // 玩家道具信息返回
+message PlayerPropResponse {
+    optional int64 bronzeTorpedo = 1; // 青铜鱼雷
+    optional int64 silverTorpedo = 2; // 白银鱼雷
+    optional int64 goldTorpedo = 3; // 黄金鱼雷
+    optional int64 skillLock = 4; // 锁定技能
+    optional int64 skillFrozen = 5; // 冰冻技能
+    optional int64 skillFast = 6; // 急速技能
+    optional int64 skillCrit = 7; // 暴击技能
+    optional int64 monthCardOverDate = 8; // 月卡到期时间(时间戳) 注：只有年月日，没有时分秒
+    optional int64 bossBugle = 9; // BOSS号角
+    optional int64 qszs = 10; // 骑士之誓
+    optional int64 blnh = 11; // 冰龙怒吼
+    optional int64 lhtz = 12; // 莲花童子
+    optional int64 swhp = 13; // 死亡火炮
+    optional int64 fenShen = 14; // 分身炮道具
+}
+
+// C_S_TTMY_MESSAGE_LIST_REQUEST = 0x10030020; // 玩家获取消息列表
+message MessageListRequest {
+}
+
+// S_C_TTMY_MESSAGE_LIST_RESPONSE = 0x20030020; // 玩家消息列表响应
+message MessageListResponse {
+    repeated MessageInfoProto messageInfo = 1; // 消息列表
+}
+
+// C_S_TTMY_UNREAD_MESSAGE_COUNT_REQUEST = 0x10030021; // 获取玩家未读消息数量
+message UnreadMessageCountRequest {
+}
+
+// S_C_TTMY_UNREAD_MESSAGE_COUNT_RESPONSE = 0x20030021; // 玩家未读消息数量响应
+message UnreadMessageCountResponse {
+    optional int32 count = 1; // 未读消息数量
+}
+
+// C_S_TTMY_READ_MESSAGE_REQUEST = 0x10030022; // 读取消息
+message ReadMessageRequest {
+    optional int64 id = 1; // 读取的消息id
+}
+
+// S_C_TTMY_READ_MESSAGE_RESPONSE = 0x20030022; // 读取消息响应
+message ReadMessageResponse {
+    optional MessageInfoProto message = 1; // 消息内容
+}
+
+// C_S_TTMY_RECEIVE_MESSAGE_ITEMS_REQUEST = 0x10030023; // 领取消息附件/删除请求
+message ReceiveMessageItemsRequest {
+    optional int64 id = 1; // 要领取附件的消息id
+}
+
+// S_C_TTMY_RECEIVE_MESSAGE_ITEMS_RESPONSE = 0x20030023; // 领取消息附件/删除响应
+message ReceiveMessageItemsResponse {
+    optional bool result = 1; // 领取/删除结果
+}
+
+// C_S_TTMY_CONFIRM_GIVE_GIFT_REQUEST = 0x10030024; // 确认赠送礼物提示请求
+message ConfirmGiveGiftRequest {
+    optional int64 toPlayerId = 1; // 被赠送礼物玩家id
+}
+
+// S_C_TTMY_CONFIRM_GIVE_GIFT_RESPONSE = 0x20030024; // 确认赠送礼物提示响应
+message ConfirmGiveGiftResponse {
+    optional int64 toPlayerId = 1; // 被赠送礼物玩家id
+    optional string toPlayerName = 2; // 被赠送玩家昵称
+}
+
+// C_S_TTMY_GIVE_GIFT_REQUEST = 0x10030025; // 赠送礼物
+message GiveGiftRequest {
+    optional int64 toPlayerId = 1; // 被赠送礼物玩家id
+    optional int32 itemId = 2; // 赠送的物品id
+    optional int64 itemCount = 3; // 赠送的礼物数量
+}
+
+// S_C_TTMY_GIVE_GIFT_RESPONSE = 0x20030025; // 赠送礼物响应
+message GiveGiftResponse {
+    optional int64 fromPlayerId = 1; // 赠送礼物玩家id
+    optional int64 toPlayerId = 2; // 被赠送礼物玩家id
+    optional int32 itemId = 3; // 赠送的物品id
+    optional int64 itemCount = 4; // 赠送的礼物数量
+    optional int64 time = 5; // 赠送时间(时间戳格式，显示时精确到min)
+}
+
+// C_S_TTMY_FUNCTION_STATE_REQUEST = 0x10030026; // 获取功能启用状态
+message FunctionStateRequest {
+}
+
+// S_C_TTMY_FUNCTION_STATE_RESPONSE = 0x20030026; // 功能启用状态响应
+message FunctionStateResponse {
+    repeated FunctionStateProto functionState = 1; // 各功能的启用状态
+}
+
+// C_S_TTMY_PLAYER_BATTERY_LEVEL_REQUEST = 0x10030027; // 获取拥有最高炮台等级的请求
+message PlayerBatteryLevelRequest {
+}
+
+// S_C_TTMY_PLAYER_BATTERY_LEVEL_RESPONSE = 0x20030027; // 拥有最高炮台等级响应
+message PlayerBatteryLevelResponse {
+    optional int32 level = 1; // 炮台等级
+}
+
+// C_S_TTMY_CHANGE_NICKNAME_REQUEST = 0x10030028; // 更改昵称请求
+message ChangeNicknameRequest {
+    optional string nickname = 1; // 更改的昵称
+}
+
+// S_C_TTMY_CHANGE_NICKNAME_RESPONSE = 0x20030028; // 更改昵称响应
+message ChangeNicknameResponse {
+    optional string nickname = 1; // 修改成功后的昵称
+}
+
+// S_C_TTMY_FIRST_CHARGE_REWARDS_RESPONSE = 0x20030029; // 首充奖励响应
+message FirstChargeRewardsResponse {
+    repeated ItemDataProto rewards = 1; // 奖励
+}
+
+// S_C_TTMY_BUY_MONTH_CARD_REWARDS_RESPONSE = 0x20030030; // 购买月卡奖励
+message BuyMonthCardRewardsResponse {
+    repeated ItemDataProto rewards = 1; // 奖励
+}
+
+// C_S_TTMY_DAILY_TASK_LIST_REQUEST = 0x10030031; // 每日任务列表请求
+message DailyTaskListRequest {
+}
+
+// 每日任务活跃度详情协议
+message ActiveLevelInfoProto {
+    optional int32 activeLevel = 1; // 活跃度
+    optional bool receive = 2; // 该活跃度奖励是否已领取
+}
+
+// S_C_TTMY_DAILY_TASK_LIST_RESPONSE = 0x20030031; // 每日任务列表响应
+message DailyTaskListResponse {
+    optional int32 totalActive = 1; // 总活跃度
+    repeated ActiveLevelInfoProto active = 2; // 活跃度详情
+    repeated TaskInfoProto tasks = 3; // 所有任务
+}
+
+// C_S_TTMY_GET_DAILY_TASK_REWARD_REQUEST = 0x10030032; // 领取每日任务奖励请求
+message GetDailyTaskRewardRequest {
+    optional int64 taskId = 1; // 任务id
+}
+
+// S_C_TTMY_GET_DAILY_TASK_REWARD_RESPONSE = 0x20030032; // 领取每日任务奖励响应
+message GetDailyTaskRewardResponse {
+    repeated ItemDataProto rewards = 1; // 奖励物品
+}
+
+// C_S_TTMY_GET_DAILY_ACTIVE_REWARD_REQUEST = 0x10030033; // 领取每日活跃奖励请求
+message GetDailyActiveRewardRequest {
+    optional int32 activeLevel = 1; // 要领取奖励的活跃等级
+}
+
+// S_C_TTMY_GET_DAILY_ACTIVE_REWARD_RESPONSE = 0x20030033; // 领取每日活跃奖励响应
+message GetDailyActiveRewardResponse {
+    repeated ItemDataProto rewards = 1; // 奖励物品
+}
+
+// C_S_TTMY_ONE_KEY_GET_DAILY_TASK_REWARDS_REQUEST = 0x10030034; // 一键领取所有已完成的每日奖励请求
+message OneKeyGetDailyTaskRewardsRequest {
+}
+
+// S_C_TTMY_ONE_KEY_GET_DAILY_TASK_REWARDS_RESPONSE = 0x20030034; // 一键领取所有已完成的每日奖励响应
+message OneKeyGetDailyTaskRewardsResponse {
+    repeated ItemDataProto rewards = 1; // 奖励物品
+}
+
+// C_S_TTMY_RECHARGE_LIMIT_REST_REQUEST = 0x10030035; // 获取玩家今日充值剩余限制金额请求
+message RechargeLimitRestRequest {
+
+}
+
+// S_C_TTMY_RECHARGE_LIMIT_REST_RESPONSE = 0x20030035; // 玩家今日充值剩余限制金额响应
+message RechargeLimitRestResponse {
+    optional int64 limitRest = 1; // 剩余限制金额
+}
+
+// S_C_TTMY_GET_RELIEF_MONEY_RESPONSE = 0x20030036; // 领取救济金响应
+message GetReliefMoneyResponse {
+    optional int64 money = 1; // 领取的金币数量
+    optional int32 restTimes = 2; // 剩余的领取次数
+}
+
+// C_S_TTMY_PLAYER_LEVEL_REQUEST = 0x10030037; // 获取玩家等级请求
+message PlayerLevelRequest {
+}
+
+// S_C_TTMY_PLAYER_LEVEL_RESPONSE = 0x20030037; // 获取玩家等级请求
+message PlayerLevelResponse {
+    optional int32 level = 1; // 玩家等级
+    optional int64 nextExperience = 2; // 下一等级需要的经验值
+    optional int64 nowExperience = 3; // 当前玩家自己的经验值
+}
+
+// C_S_TTMY_GIVE_GIFT_LOG_REQUEST = 0x10030038; // 获取赠送记录的请求
+message GiveGiftLogRequest {
+    optional int32 pageNo = 1; // 当前页码 从1开始
+    optional int32 pageSize = 2; // 每页数据数量
+}
+
+// S_C_TTMY_GIVE_GIFT_LOG_RESPONSE = 0x20030038; // 赠送记录响应
+message GiveGiftLogResponse {
+    optional int64 totalCount = 1; // 数据总条数
+    optional int32 pageNo = 2; // 当前页码
+    repeated GiveGiftLogProto logs = 3; // 赠送记录数据
+}
+
+// C_S_TTMY_BOSS_BUGLE_BUY_LIMIT_REQUEST = 0x10030039; // 玩家今日boss号角限购次数信息
+message BossBugleBuyLimitRequest {
+}
+
+// S_C_TTMY_BOSS_BUGLE_BUY_LIMIT_RESPONSE = 0x20030039; // 玩家今日boss号角限购次数信息
+message BossBugleBuyLimitResponse {
+    optional int32 buyLimit = 1; // 今日购买上限
+    optional int32 usedLimit = 2; // 今日已使用购买上限
+}
+
+// C_S_TTMY_GET_ADDRESS_REQUEST = 0x10030040; // 获取收货地址请求
+message GetAddressRequest {
+}
+
+// S_C_TTMY_GET_ADDRESS_RESPONSE = 0x20030040; // 获取收货地址响应
+message GetAddressResponse {
+    optional string name = 1; // 姓名
+    optional string phone = 2; // 手机号码
+    optional string address = 3; // 收货地址
+}
+
+// C_S_TTMY_SET_ADDRESS_REQUEST = 0x10030041; // 设置收货地址请求
+message SetAddressRequest {
+    optional string name = 1; // 姓名
+    optional string phone = 2; // 手机号码
+    optional string address = 3; // 收货地址
+}
+
+// S_C_TTMY_SET_ADDRESS_RESPONSE = 0x20030041; // 设置收货地址响应
+message SetAddressResponse {
+}
+
+// C_S_TTMY_LOTTERY_EXCHANGE_LOG_REQUEST = 0x10030042; // 获取兑换记录请求
+message LotteryExchangeLogRequest {
+    optional int32 pageNo = 1; // 当前页码 从1开始
+    optional int32 pageSize = 2; // 每页数据数量
+}
+
+// S_C_TTMY_LOTTERY_EXCHANGE_LOG_RESPONSE = 0x20030042; // 获取兑换记录响应
+message LotteryExchangeLogResponse {
+    optional int64 totalCount = 1; // 数据总条数
+    optional int32 pageNo = 2; // 当前页码
+    repeated LotteryExchangeLogProto log = 3; // 记录
+}

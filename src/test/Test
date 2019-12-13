@@ -1,0 +1,374 @@
+package test;
+
+public class Test {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+
+
+
+
+        }
+    }
+    public List<Integer> getControllerFishSpot(List<Integer> lines, int singleGold, OseePlayerEntity player) {
+        List<Integer> spots = new ArrayList<Integer>();
+        for (int i = 0; i < planeFishNum; i++) {
+            spots.add(fruitIds.get(new Random().nextInt(fruitIds.size())));
+        }
+        // 先判断是否可以有4连5连
+        int random = new Random().nextInt(1000);
+        // 千分之一有5连 千分之四有4连
+        List<Integer> controllerSpots2 = new ArrayList<>();// 保存被改变的鱼
+        System.out.println("输赢控制01？"+player.getLoseControl());
+        controllerWin=player.getLoseControl()==1?true:false;
+        if (random >= 5) {
+            System.out.println("几乎不可能有4连5连");
+            for (Integer line : lines) {// 根据线来生成点
+
+                Integer[][] thisSpots = winLines[line - 1];// 当前一条下注线的点
+                int infishSpotsSeat1, infishSpotsSeat2;// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                int fishId1, fishId2;// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+
+                {// 第3条鱼
+                    Integer[] localSpot = thisSpots[thisSpots.length - 3];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat1 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                    fishId1 = spots.get(infishSpotsSeat1);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                {// 第4条鱼
+                    Integer[] localSpot = thisSpots[thisSpots.length - 2];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat2 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                    fishId2 = spots.get(infishSpotsSeat2);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                if (fishId1 == fishId2 && fishId1 != fruitIds.get(0)) {// 前两个不能相同 ，且没有wild
+                    boolean flag = false;// 检测是否修改成功
+
+                    // 判断之前是否保存过
+                    if (!controllerSpots2.contains(infishSpotsSeat1)) {
+                        if (!flag) {
+                            flag = true;
+                            int fid = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                            fishId1 = (fid == fishId1) ? (fid > 2 ? fid - 1 : fruitIds.size()) : fid;
+                            spots.set(infishSpotsSeat1, fishId1);
+                        }
+                        controllerSpots2.add(infishSpotsSeat1);
+                    }
+
+                    if (!controllerSpots2.contains(infishSpotsSeat2)) {
+                        if (!flag) {
+                            flag = true;
+                            int fid = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                            fishId2 = (fid == fishId2) ? (fid > 2 ? fid - 1 : fruitIds.size()) : fid;
+                            spots.set(infishSpotsSeat2, fishId2);
+                        }
+                        controllerSpots2.add(infishSpotsSeat2);
+                    }
+
+                    if (!flag) {// 前两个，都没有修改成功
+                        logger.info("警告[1=>前两个鱼id都没有修改成功]");
+                    }
+
+                } else {
+
+                    if (fishId1 == fruitIds.get(0) && fishId2 == fruitIds.get(0)) {// 都为wild
+                        // 修改全部
+                        int fid1 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId1 = fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                        int fid2 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId2 = (fid2 == fishId1) ? (fid2 > 2 ? fid2 - 1 : fruitIds.size()) : fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    } else if (fishId1 == fruitIds.get(0)) {// 第一条鱼为wild
+
+                        int fid1 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId1 = (fid1 == fishId2) ? (fid1 > 2 ? fid1 - 1 : fruitIds.size()) : fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                    } else if (fishId2 == fruitIds.get(0)) {// 第二条鱼为wild
+
+                        int fid2 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId2 = (fid2 == fishId1) ? (fid2 > 2 ? fid2 - 1 : fruitIds.size()) : fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    } else {
+
+                    }
+
+                }
+
+                if (!controllerSpots2.contains(infishSpotsSeat1)) {
+                    controllerSpots2.add(infishSpotsSeat1);
+                }
+                if (!controllerSpots2.contains(infishSpotsSeat2)) {
+                    controllerSpots2.add(infishSpotsSeat2);
+                }
+
+            }
+        } else if (random >= 1) {
+            System.out.println("千分之四有4连");
+            for (Integer line : lines) {// 根据线来生成点
+
+                Integer[][] thisSpots = winLines[line - 1];// 当前一条下注线的点
+                int infishSpotsSeat1, infishSpotsSeat2;// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                int fishId1, fishId2;// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+
+                {// 第4条鱼
+                    Integer[] localSpot = thisSpots[thisSpots.length - 2];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat1 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                    fishId1 = spots.get(infishSpotsSeat1);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                {// 第5条鱼
+                    Integer[] localSpot = thisSpots[thisSpots.length - 1];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat2 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                    fishId2 = spots.get(infishSpotsSeat2);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                if (fishId1 == fishId2 && fishId1 != fruitIds.get(0)) {// 前两个不能相同 ，且没有wild
+                    boolean flag = false;// 检测是否修改成功
+
+                    // 判断之前是否保存过
+                    if (!controllerSpots2.contains(infishSpotsSeat1)) {
+                        if (!flag) {
+                            flag = true;
+                            int fid = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                            fishId1 = (fid == fishId1) ? (fid > 2 ? fid - 1 : fruitIds.size()) : fid;
+                            spots.set(infishSpotsSeat1, fishId1);
+                        }
+                        controllerSpots2.add(infishSpotsSeat1);
+                    }
+
+                    if (!controllerSpots2.contains(infishSpotsSeat2)) {
+                        if (!flag) {
+                            flag = true;
+                            int fid = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                            fishId2 = (fid == fishId2) ? (fid > 2 ? fid - 1 : fruitIds.size()) : fid;
+                            spots.set(infishSpotsSeat2, fishId2);
+                        }
+                        controllerSpots2.add(infishSpotsSeat2);
+                    }
+
+                    if (!flag) {// 前两个，都没有修改成功
+                        logger.info("警告[2=>前两个鱼id都没有修改成功]");
+                    }
+
+                } else {
+
+                    if (fishId1 == fruitIds.get(0) && fishId2 == fruitIds.get(0)) {// 都为wild
+                        // 修改全部
+                        int fid1 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId1 = fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                        int fid2 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId2 = (fid2 == fishId1) ? (fid2 > 2 ? fid2 - 1 : fruitIds.size()) : fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    } else if (fishId1 == fruitIds.get(0)) {// 第4条鱼为wild
+
+                        int fid1 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId1 = (fid1 == fishId2) ? (fid1 > 2 ? fid1 - 1 : fruitIds.size()) : fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                    } else if (fishId2 == fruitIds.get(0)) {// 第5条鱼为wild
+
+                        int fid2 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId2 = (fid2 == fishId1) ? (fid2 > 2 ? fid2 - 1 : fruitIds.size()) : fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    } else {
+
+                    }
+
+                }
+
+                if (!controllerSpots2.contains(infishSpotsSeat1)) {
+                    controllerSpots2.add(infishSpotsSeat1);
+                }
+                if (!controllerSpots2.contains(infishSpotsSeat2)) {
+                    controllerSpots2.add(infishSpotsSeat2);
+                }
+
+            }
+        } else {
+            System.out.println("可以有5连");
+        }
+
+        /*
+         * // 玩家抽奖未中奖累积次数 long playerChipNum = getFruitLaBaLukeyNum(player.getId()); //
+         * 根据玩家抽奖次数，计算得到一个幸运值 long lukeyNum=playerChipNum;
+         */
+        List<Integer> controllerSpots=new ArrayList<>();// 保存改变的(在界面上显示的鱼)点的位置
+        for (Integer line : lines) {// 根据线来生成点
+            // 取得当前线对应剩余的金币
+            long localGold = getLineContollerGold(line);
+            //logger.info("第"+line+"条线对应库存金币为："+localGold);
+            if(localGold<0) {// 必定不能中
+                System.out.println("当前线"+line+"金币低于0，必定不能中");
+                Integer[][] thisSpots = winLines[line-1];// 当前一条下注线的点
+                int infishSpotsSeat1,infishSpotsSeat2;// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                int fishId1,fishId2;// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                {// 第一条鱼
+                    Integer[] localSpot = thisSpots[0];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat1 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼)中的位置
+                    fishId1 = spots.get(infishSpotsSeat1);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                {//第二条鱼
+                    Integer[] localSpot = thisSpots[1];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat2 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼)中的位置
+                    fishId2 = spots.get(infishSpotsSeat2);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                if(fishId1==fishId2&&fishId1!=fruitIds.get(0)) {//前两个不能相同 ，且没有wild
+                    boolean flag=false;// 检测是否修改成功
+
+                    //判断之前是否保存过
+                    if(!controllerSpots.contains(infishSpotsSeat1)) { if(!flag) {
+
+                        flag=true; int fid=new Random().nextInt(fruitIds.size()-1)+2;//不能有wild
+                        fishId1=(fid==fishId1)?(fid>2?fid-1:fruitIds.size()):fid;
+                        spots.set(infishSpotsSeat1, fishId1); }
+                        controllerSpots.add(infishSpotsSeat1); }
+
+                    if(!controllerSpots.contains(infishSpotsSeat2)) {
+                        if(!flag) {
+                            flag=true;
+                            int fid=new Random().nextInt(fruitIds.size()-1)+2;//不能有wild
+                            fishId2=(fid==fishId2)?(fid>2?fid-1:fruitIds.size()):fid;
+                            spots.set(infishSpotsSeat2, fishId2); }
+                        controllerSpots.add(infishSpotsSeat2); }
+
+                    if(!flag) {// 前两个，都没有修改成功 logger.info("警告[3=>前两个鱼id都没有修改成功]");
+                        logger.info("警告[3=>前两个鱼id都没有修改成功]");
+                    }
+                    else
+                        logger.info("前两个鱼修改成功！");
+                }else {
+
+                    if(fishId1==fruitIds.get(0)&&fishId2==fruitIds.get(0)) {// 都为wild
+                        // 修改全部
+                        int fid1=new Random().nextInt(fruitIds.size()-1)+2;//不能有wild fishId1=fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                        int fid2=new Random().nextInt(fruitIds.size()-1)+2;//不能有wild
+                        fishId2=(fid2==fishId1)?(fid2>2?fid2-1:fruitIds.size()):fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    }else if(fishId1==fruitIds.get(0)) {// 第一条鱼为wild
+
+                        int fid1=new Random().nextInt(fruitIds.size()-1)+2;//不能有wild
+                        fishId1=(fid1==fishId2)?(fid1>2?fid1-1:fruitIds.size()):fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                    }else if(fishId2==fruitIds.get(0)) {// 第二条鱼为wild
+
+                        int fid2=new Random().nextInt(fruitIds.size()-1)+2;//不能有wild
+                        fishId2=(fid2==fishId1)?(fid2>2?fid2-1:fruitIds.size()):fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    }else {
+
+                    }
+
+                }
+
+                if(!controllerSpots.contains(infishSpotsSeat1)) {
+                    controllerSpots.add(infishSpotsSeat1); }
+                if(!controllerSpots.contains(infishSpotsSeat2)) {
+                    controllerSpots.add(infishSpotsSeat2); }
+
+            }else {
+
+            }
+
+        }
+
+        // 控制输，或者不控制 ljy
+        if (controllerWin) {
+            System.out.println("必输");
+            List<Integer> controllerSpots3 = new ArrayList<>();// 保存改变的(在界面上显示的鱼)点的位置
+            for (Integer line : lines) {// 根据线来生成点
+
+                Integer[][] thisSpots = winLines[line - 1];// 当前一条下注线的点
+                int infishSpotsSeat1, infishSpotsSeat2;// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                int fishId1, fishId2;// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+
+                {// 第一条鱼
+                    Integer[] localSpot = thisSpots[0];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat1 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                    fishId1 = spots.get(infishSpotsSeat1);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                {// 第二条鱼
+                    Integer[] localSpot = thisSpots[1];// 得到当前点 点存的是位置，如：{1,2}
+                    infishSpotsSeat2 = localSpot[0] * rankNum + localSpot[1];// 得到在 鱼的点(在界面上显示的鱼) 中的位置
+                    fishId2 = spots.get(infishSpotsSeat2);// 得到在 鱼的点(在界面上显示的鱼) 中的鱼的id
+                }
+                if (fishId1 == fishId2 && fishId1 != fruitIds.get(0)) {// 前两个不能相同 ，且没有wild
+                    boolean flag = false;// 检测是否修改成功
+
+                    // 判断之前是否保存过
+                    if (!controllerSpots3.contains(infishSpotsSeat1)) {
+                        if (!flag) {
+                            flag = true;
+                            int fid = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                            fishId1 = (fid == fishId1) ? (fid > 2 ? fid - 1 : fruitIds.size()) : fid;
+                            spots.set(infishSpotsSeat1, fishId1);
+                        }
+                        controllerSpots3.add(infishSpotsSeat1);
+                    }
+
+                    if (!controllerSpots3.contains(infishSpotsSeat2)) {
+                        if (!flag) {
+                            flag = true;
+                            int fid = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                            fishId2 = (fid == fishId2) ? (fid > 2 ? fid - 1 : fruitIds.size()) : fid;
+                            spots.set(infishSpotsSeat2, fishId2);
+                        }
+                        controllerSpots3.add(infishSpotsSeat2);
+                    }
+
+                    if (!flag) {// 前两个，都没有修改成功
+                        logger.info("警告[3=>前两个鱼id都没有修改成功]");
+                    }
+
+                } else {
+
+                    if (fishId1 == fruitIds.get(0) && fishId2 == fruitIds.get(0)) {// 都为wild
+                        // 修改全部
+                        int fid1 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId1 = fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                        int fid2 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId2 = (fid2 == fishId1) ? (fid2 > 2 ? fid2 - 1 : fruitIds.size()) : fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    } else if (fishId1 == fruitIds.get(0)) {// 第一条鱼为wild
+
+                        int fid1 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId1 = (fid1 == fishId2) ? (fid1 > 2 ? fid1 - 1 : fruitIds.size()) : fid1;
+                        spots.set(infishSpotsSeat1, fishId1);
+
+                    } else if (fishId2 == fruitIds.get(0)) {// 第二条鱼为wild
+
+                        int fid2 = new Random().nextInt(fruitIds.size() - 1) + 2;// 不能有wild
+                        fishId2 = (fid2 == fishId1) ? (fid2 > 2 ? fid2 - 1 : fruitIds.size()) : fid2;
+                        spots.set(infishSpotsSeat2, fishId2);
+
+                    } else {
+
+                    }
+
+                }
+
+                if (!controllerSpots3.contains(infishSpotsSeat1)) {
+                    controllerSpots3.add(infishSpotsSeat1);
+                }
+                if (!controllerSpots3.contains(infishSpotsSeat2)) {
+                    controllerSpots3.add(infishSpotsSeat2);
+                }
+            }
+        }
+
+        return spots;
+    }
+
+}

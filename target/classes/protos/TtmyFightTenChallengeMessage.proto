@@ -1,0 +1,157 @@
+syntax = "proto2";
+
+import "OseeFightTenMessage.proto";
+
+package com.maple.game.osee.proto.fightten;
+
+// ****************** 公共协议 *********************
+
+// 挑战赛房间信息协议
+message TenChallengeRoomInfoProto {
+    optional int32 roomCode = 1; // 房间号
+    optional int32 roundTotal = 2; // 总局数
+    optional int32 roundNow = 3; // 当前局数
+    optional int64 moneyLimit = 4; // 加入金币限制
+    optional int32 feeType = 5; // 房费支付类型 0-房主承包：房主支付钻石，有固定局数 1-挑战模式：每次扣除挑战次数
+    optional int32 state = 6; // 房间状态 0-房主限制 1-准备中 2-游戏中
+    optional int64 ownerId = 7; // 房主ID
+    repeated TenRoomPlayerInfoProto roomPlayers = 8; // 在房间内的玩家
+}
+
+// 挑战赛排行榜每项的数据
+message TenChallengeRankingProto {
+    optional int64 userId = 1; // 玩家ID
+    optional string nickname = 2; // 玩家昵称
+    optional int32 headIndex = 3; // 头像序号
+    optional string headUrl = 4; // 头像链接
+    optional int64 score = 5; // 得分
+}
+
+// ***********************************************
+
+// C_S_TTMY_TEN_CHALLENGE_EXCHANGE_TIMES_REQUEST = 0x10032027; // 钻石兑换挑战次数请求
+message TenChallengeExchangeTimeRequest {
+    optional int32 diamondNum = 1; // 钻石数量
+}
+
+// S_C_TTMY_TEN_CHALLENGE_EXCHANGE_TIMES_RESPONSE = 0x20032027; // 钻石兑换挑战次数响应
+message TenChallengeExchangeTimeResponse {
+    optional int32 times = 1; // 兑换的次数
+}
+
+// C_S_TTMY_TEN_CHALLENGE_ROOM_LIST_REQUEST = 0x10032023; // 获取拼十挑战赛房间列表
+message TenChallengeRoomListRequest {
+    optional int32 pageNo = 1; // 页码 从1开始
+    optional int32 pageSize = 2; // 每页数据数量
+}
+
+// S_C_TTMY_TEN_CHALLENGE_ROOM_LIST_RESPONSE = 0x20032023; // 获取拼十挑战赛房间列表
+message TenChallengeRoomListResponse {
+    repeated TenChallengeRoomInfoProto roomList = 1; // 房间列表
+    optional int32 pageNo = 2; // 当前页码 从1开始
+    optional int32 totalCount = 3; // 数据总数量
+}
+
+// C_S_TTMY_TEN_CHALLENGE_CREATE_ROOM_REQUEST = 0x10032024; // 创建拼十挑战赛房间
+message TenChallengeCreateRoomRequest {
+    optional int32 moneyLimitIndex = 1; // 金币限制序号 0、1、2、3分别对应过去
+    optional int32 feeType = 2; // 房费支付类型 0-房主承包：房主支付钻石，有固定局数 1-挑战模式：每次扣除挑战次数
+    optional int32 roundIndex = 3; // 局数序号 0-10局 1-20局
+    optional bool privateRoom = 4; // 是否是亲友房
+}
+
+// C_S_TTMY_TEN_CHALLENGE_MATCH_REQUEST = 0x10032025; // 匹配请求
+message TenChallengeMatchRequest {
+}
+
+// S_C_TTMY_TEN_CHALLENGE_MATCH_RESPONSE = 0x20032025; // 匹配请求响应
+message TenChallengeMatchResponse {
+    optional int32 result = 1; // 匹配结果 0-金币不足 1-挑战次数不足 2-匹配中 3-匹配时间到 4-匹配成功
+    optional string info = 2; // 结果说明
+}
+
+// C_S_TTMY_TEN_CHALLENGE_CANCEL_MATCH_REQUEST = 0x10032030; // 取消匹配请求
+message TenChallengeCancelMatchRequest {
+}
+
+// S_C_TTMY_TEN_CHALLENGE_CANCEL_MATCH_RESPONSE = 0x20032030; // 取消匹配响应
+message TenChallengeCancelMatchResponse {
+    optional int32 result = 1; // 取消结果 0-成功 1-失败
+}
+
+// C_S_TTMY_TEN_CHALLENGE_JOIN_ROOM_REQUEST = 0x10032026; // 申请加入房间
+message TenChallengeJoinRoomRequest {
+    optional int32 roomCode = 1; // 房间号
+}
+
+// S_C_TTMY_TEN_CHALLENGE_JOIN_ROOM_RESPONSE = 0x20032026; // 申请加入房间返回
+message TenChallengeJoinRoomResponse {
+    optional int32 result = 1; // 加入房间的结果：只有不加入成功就有改响应  1-挑战次数不足 2-金币不足
+    optional string msg = 2; // 提示信息
+}
+
+// S_C_TTMY_TEN_CHALLENGE_ROOM_INFO_RESPONSE = 0x20032028; // 拼十房间信息
+message TenChallengeRoomInfoResponse {
+    optional TenChallengeRoomInfoProto roomInfo = 1; // 房间信息
+}
+
+// C_S_TTMY_TEN_CHALLENGE_KICK_PLAYER_REQUEST = 0x10032029; // 房主踢人请求
+message TenChallengeKickPlayerRequest {
+    optional int64 playerId = 1; // 被踢玩家的ID
+}
+
+// S_C_TTMY_TEN_CHALLENGE_RECONNECT_RESPONSE = 0x20032031; // 重连响应
+message TenChallengeReconnectResponse {
+    optional int32 roomCode = 1; // 房间号
+
+    optional int64 maxBetMoney = 2; // 最高下注
+    optional int32 roomState = 3; // 房间当前状态
+    optional int32 stateRestTime = 4; // 当前状态剩余持续时长：秒
+
+    repeated int64 readyPlayers = 5; // 准备阶段
+    optional int32 seat = 6; // 座位号：0-最多人数减一
+    repeated int32 cards = 7; // 开始发牌(发牌阶段)
+
+    repeated TenFightBankerProto fightedBankerProto = 8; // 已抢庄的玩家数据(抢庄阶段)
+    optional int64 bankerId = 9; // 选中的庄家id
+    repeated TenFightBankerProto fightBankerProto = 10; // (当bankerId有值时)广播全部玩家的抢庄倍数
+
+    repeated int64 aniPlayerId = 11; // 参与随机抢庄的所有玩家id(动画状态)
+
+    repeated TenBetMoneyProto betMoneyProto = 12; // 已下注的玩家(下注阶段)
+    repeated int64 betMoneyList = 13; // 下注列表(下注阶段)
+
+    optional int32 lastCard = 14; // 自己最后一张牌的值(看牌阶段)
+
+    repeated int64 seeOrRubCardPlayer = 15; // 已看牌或搓牌的玩家
+
+    repeated TenRoundOverPlayerDataProto roundOverProto = 16; // 一局结算
+}
+
+// C_S_TTMY_TEN_CHALLENGE_REST_TIMES_REQUEST = 0x10032032; // 获取拼十挑战赛剩余的挑战次数
+message TenChallengeRestTimesRequest {
+}
+
+// S_C_TTMY_TEN_CHALLENGE_REST_TIMES_RESPONSE = 0x20032032; // 获取拼十挑战赛剩余挑战次数响应
+message TenChallengeRestTimeResponse {
+    optional int64 times = 1; // 剩余的拼十挑战次数
+}
+
+// C_S_TTMY_TEN_CHALLENGE_RANKING_LIST_REQUEST = 0x10032033; // 获取排行榜
+message TenChallengeRankingListRequest {
+}
+
+// S_C_TTMY_TEN_CHALLENGE_RANKING_LIST_RESPONSE = 0x20032033; // 排行榜数据响应
+message TenChallengeRankingListResponse {
+    repeated TenChallengeRankingProto ranking = 1; // 排行榜数据
+    optional int32 myRanking = 2; // 我的排名 -1 未上榜
+}
+
+// C_S_TTMY_TEN_CHALLENGE_LEAVE_ROOM_REQUEST = 0x10032034; // 请求离开房间
+message TenChallengeLeaveRoomRequest {
+}
+
+// S_C_TTMY_TEN_CHALLENGE_LEAVE_ROOM_RESPONSE = 0x20032034; // 请求离开房间响应
+message TenChallengeLeaveRoomResponse {
+    optional int64 playerId = 1; // 离开房间的玩家id
+}

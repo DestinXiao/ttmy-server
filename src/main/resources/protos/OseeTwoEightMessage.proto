@@ -1,0 +1,196 @@
+syntax = "proto2";
+
+package com.maple.game.osee.proto;
+import "OseeTwoEightPublicData.proto";
+
+enum TwoEightMessageCode {
+    C_S_TWOEIGHT_JOIN_ROOM_REQUEST = 0x10036001; // 加入房间请求
+
+    S_C_TWOEIGHT_ROOMINFO_RESPONSE = 0x20036003; //房间信息响应
+
+    S_C_TEROOM_PLAYER_INFO_LIST_RESPONSE = 0x20036004; // 返回房间内所有玩家的信息
+
+    S_C_TEROOM_PLAYER_INFO_RESPONSE = 0x20036005; // 返回房间内单个玩家的信息
+
+    C_S_SHAKE_DICE_REQUEST = 0x10036006; //摇骰子请求
+    S_C_SHAKE_DICE_REPONSE = 0x20036006; //摇骰子响应
+
+    C_S_TEROOM_BANKER_REQUEST = 0x10036008; //申请上庄
+    S_C_TEROOM_BANKER_RESPONSE = 0x20036008; //上庄响应
+
+    C_S_TEROOM_QUIT_REQUEST = 0x10036010; //退出房间请求
+    S_C_TEROOM_QUIT_RESPONSE = 0x20036010; //退出房间响应
+
+    C_S_TEROMM_BET_REQUEST = 0x10036011; //下注请求
+    S_C_TEROMM_BET_RESPONSE = 0x20036011; //下注响应
+    S_C_TEROOM_PLAYER_BET_INFO_RESPONSE = 0x20036016; //玩家下注详情
+
+    S_C_TEROOM_ROOM_BET_INFO_RESPONSE = 0x20036017; //房间下注详情（重连发）
+
+
+    S_C_TEROOM_CSRD_RESPONSE = 0x20036013; //发牌响应
+
+    S_C_TEROOM_ROUND_OVER_RESPONSE = 0x20036014; //结算响应
+    S_C_TEROOM_TO_BANKER_RESPONSE = 0x20036015; //上庄列表响应
+
+    S_C_TEROOM_STATE_RESPONSE = 0x20036018; //房间阶段响应
+    C_S_TEROOM_CANCEL_BANKER_REQUEST = 0x10036019; //取消上庄请求
+    S_C_TEROOM_CANCEL_BANKER_RESPONSE = 0x20036019; //取消上庄响应
+
+    S_C_TEROOM_WIN_LOSE_INFO_RESPONSE = 0x20036020; //各个门输赢情况
+    S_C_TEROOM_WIN_LOSE_HISTORY_INFO_RESPONSE = 0x20036021; //各个门历史输赢情况
+
+    S_C_TEROOM_PLAYER_ALL_TYPE_BET_MONEY_RESPONSE = 0x20036022; //玩家各个门下注金额
+
+    S_C_TEROOM_PLAYER_RECONNECT_INFO_RESPONSE = 0x20036023; //玩家重连信息
+
+    C_S_TEROOM_PLAYER_RECONNECT_INFO_REQUEST = 0x10036020; //玩家重连请求
+}
+
+//C_S_TEROOM_PLAYER_RECONNECT_INFO_REQUEST = 0x10035020;//玩家重连请求
+message TERoomReconnectRequest {
+
+}
+//C_S_TEROOM_CANCEL_BANKER_REQUEST = 0x10035019;//取消上庄请求
+message TERoomCancelBankerRequest {
+
+}
+
+//S_C_TEROOM_CANCEL_BANKER_RESPONSE = 0x20035019;//取消上庄响应
+message TERoomCancelBankerResponse {
+    optional int32 isSuccess = 1; //取消响应 0-成功 1-下局生效 -1-失败
+}
+
+//C_S_TWOEIGHT_JOIN_ROOM_REQUEST = 0x10035001; // 加入房间请求
+message TwoEightJoinRoomRequest {
+
+}
+//C_S_TEROOM_QUIT_REQUEST = 0x10035010;//申请退出房间
+message TERoomQuitRequest {
+
+}
+//S_C_TEROOM_QUIT_RESPONSE= 0x20035010;//退出房间响应
+message TERoomQuitResponse {
+    optional int32 isSuccess = 1; //0-成功，1-当前玩家下注无法离开，2-当前玩家为庄家无法离开,3-三局未下注自动退出房间
+}
+
+//S_C_TEROOM_STATE_RESPONSE = 0x20035018;//房间阶段响应 0-未开始 1-下注阶段，2-摇骰子阶段，3-发牌阶段，4-结算阶段
+message TERoomStateResponse {
+    optional int32 roomState = 1;
+    optional int32 remainTime = 2;
+}
+
+//C_S_TWOEIGHT_ROOMINFO_RESPONSE= 0x20035003;//房间信息响应
+message TwoEightRoomInfoResponse {
+    optional int32 roomCode = 1; //房间号
+    optional int64 bankerId = 2; //庄家id
+    optional int32 roomState = 3; //房间状态 0-未开始，1-押注阶段，2-发牌阶段，3-结算阶段
+    optional int64 shunMoney = 4; //顺门押注数量
+    optional int64 tianMoney = 5; //天门押注数量
+    optional int64 diMoney = 6; //地门押注数量
+    optional int32 peopleNum = 7; //房间当前人数
+}
+
+//S_C_TEROOM_PLAYER_INFO_LIST_RESPONSE = 0x20035004; // 房间内所有玩家信息(排序后)响应
+message TEPlayerListResponse {
+    repeated RoomPlayerInfoProto playerList = 1;
+}
+
+//S_C_TEROOM_PLAYER_INFO_RESPONSE = 0x20035005; // 单个玩家信息响应
+message TERoomPlayerResponse {
+    optional RoomPlayerInfoProto info = 1;
+}
+
+//C_S_SHAKE_DICE_REQUEST = 0x20035006;//摇骰子请求
+message ShakeDiceRequest {
+    optional int32 roomCode = 1;
+}
+
+//S_C_SHAKE_DICE_REPONSE = 0x20035007;//摇骰子响应
+message ShakeDiceResponse {
+    repeated int32 dice = 1; //摇骰子点数
+}
+
+//C_S_TEROOM_BANKER_REQUEST =  0x20035008;//申请上庄
+message RoomBankerRequest {
+    optional int32 roomCode = 1;
+}
+
+//S_C_TEROOM_BANKER_RESPONSE=  0x20035009;//上庄响应
+message RoomBankerResponse {
+    optional bool isSuccess = 1;
+}
+
+// S_C_TEROOM_TO_BANKER_RESPONSE = 0x20035015;上庄列表响应
+message WaitToBeBankerInfoResponse {
+    repeated RoomPlayerInfoProto bankerList = 1;
+}
+
+//C_S_TEROMM_BET_REQUEST = 0x10035011;//下注请求
+message BetInFoRequest {
+    repeated BetInfo betInfo = 1;
+
+}
+
+//S_C_TEROMM_BET_RESPONSE = 0x20035011;//下注响应
+message BetInfoResponse {
+    optional int32 res = 1; //0-下注成功，1-下注失败,2-注已满
+}
+
+//   S_C_TEROOM_PLAYER_BET_INFO_RESPONSE = 0x20035016;//玩家下注详情
+message PlayerBetInfoResponse {
+    optional int64 playerId = 1; //玩家id
+    repeated BetInfo betInfo = 2; //下注集合
+    optional int64 remainMoney = 3; //剩余金币数量
+    repeated int64 allMoney = 4; //顺、天、地各个门总金额
+}
+
+//S_C_TEROOM_PLAYER_ALL_TYPE_BET_MONEY_RESPONSE = 0x20035022;//玩家各个门下注金额
+message PlayerAllTypeBetMoneyResponse {
+    optional int64 shunMoney = 1; //顺门下注金额
+    optional int64 tianMoney = 2; //天门下注金额
+    optional int64 diMoney = 3; //地门下注金额
+}
+
+//S_C_TEROOM_PLAYER_RECONNECT_INFO_RESPONSE = 0x20035023;//玩家重连信息
+message ReconnectInfoResponse {
+    optional int32 roomState = 1; //房间状态 0-未开始，1-押注阶段，2-发牌阶段，3-结算阶段
+    optional int32 remainTime = 2; //该阶段剩余时间
+    repeated CardInfoProto cards = 3; //牌的详情
+    repeated WinInfoProto winInfo = 4; //各个门的输赢情况
+    repeated int64 typeShun = 5; //顺门下注详情
+    repeated int64 typeTian = 6; //天门下注详情
+    repeated int64 typeDi = 7; //地门下注详情
+
+}
+
+//S_C_TEROOM_ROOM_BET_INFO_RESPONSE = 0x20035017;//房间下注详情（重连发）
+message RoomBetInfoResponse {
+    repeated int64 typeShun = 1; //顺门下注详情
+    repeated int64 typeTian = 2; //天门下注详情
+    repeated int64 typeDi = 3; //地门下注详情
+}
+
+//S_C_TEROOM_CSRD_RESPONSE = 0x20035013;//发牌响应
+message CardInfoResponse {
+    repeated CardInfoProto cards = 1;
+}
+
+//S_C_TEROOM_ROUND_OVER_RESPONSE = 0x20035014;//结算响应
+message RoundOverResponse {
+    optional int64 myScore = 1; //本家得分
+    optional int64 myReturnScore = 2; //本家返回分
+    optional int64 bankerScore = 3; //庄家所得分
+    optional int64 bankerReturnScore = 4; //庄家返回分
+}
+
+//S_C_TEROOM_WIN_LOSE_INFO_RESPONSE = 0x20035020;//各个门输赢情况
+message WinLoseInfoResponse {
+    repeated WinInfoProto winInfo = 1;
+
+}
+
+//S_C_TEROOM_WIN_LOSE_HISTORY_INFO_RESPONSE = 0x20035021;//各个门历史输赢情况
+message WinLoseHistoryInfoResponse {
+    repeated WinHistoryInfoProto winHistoryInfo = 1;
+}

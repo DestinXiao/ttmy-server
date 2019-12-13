@@ -1,0 +1,260 @@
+syntax = "proto2";
+
+import "OseePublicData.proto";
+
+package com.maple.game.osee.proto;
+
+// 捕鱼玩家信息协议
+message FishingPlayerInfoMessage {
+    optional int64 playerId = 1; // 玩家id
+    optional string name = 2; // 玩家昵称
+    optional int32 headIndex = 3; // 头像序号
+    optional string headUrl = 4; // 头像地址
+    optional int32 sex = 5; // 性别
+    optional int64 money = 6; // 携带金币
+    optional int32 seat = 7; // 座位
+    optional bool online = 8; // 是否在线
+    optional int32 vipLevel = 9; // vip等级
+    optional int32 viewIndex = 10; // 外观序号
+    optional int32 batteryLevel = 11; // 炮台等级
+    optional int32 batteryMult = 12; // 炮台倍数
+    optional int32 level = 13; // 玩家等级
+}
+
+// 捕鱼鱼类数据
+message FishingGrandPrixFishInfoMessage {
+    optional int64 id = 1; // 实例id
+    optional int64 fishId = 2; // 鱼配置id
+    optional int64 routeId = 3; // 路线id
+    optional float clientLifeTime = 101; //客户端存活时间
+    optional int64 createTime = 102; // 创建时间
+}
+
+// 奖励信息协议
+message FishingGrandPrixRewardMessage {
+    required int32 itemId = 1; // 物品id;
+    required int32 itemNum = 2; // 物品数量
+}
+
+// 大奖赛玩家信息
+message FishingGrandPrixPlayerInfoMessage {
+    required int64 playerId = 1;    // 玩家Id
+    required int32 weekPoint = 2;    // 本周积分
+    required int32 dayPoint = 3;     // 今日积分
+    required int32 rank = 4;    // 今日排名 0: 未入榜
+    optional string name = 5; // 玩家昵称
+    optional int32 headIndex = 6; // 头像序号
+    optional string headUrl = 7; // 头像地址
+    optional int32 sex = 8; // 性别
+    optional int32 level = 13; // 玩家等级
+    optional FishingGrandPrixRewardMessage reward = 9;    // 奖励
+
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_START_REQUEST = 0x10041001; // 大奖赛是否开赛请求
+message FishingGrandPrixStartRequest {
+    required int64 playerId = 1;
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_START_RESPONSE = 0x20041001;    // 大奖赛开赛响应
+message FishingGrandPrixStartResponse {
+    required bool progress = 1;    // 大奖赛是否开始
+    optional int32 bullet = 2;  // 剩余子弹数
+    required int64 startTime = 3; // 开赛时间
+    required int64 endTime = 4; //结束时间
+    optional int32 games = 6; // 玩家游戏局数
+
+}
+
+//C_S_TTMY_FINSHING_GRAND_PRIX_PLAYER_INFO_REQUEST = 0x10041002;  // 大奖赛用户信息请求
+message FishingGrandPrixPlayerInfoRequest {
+    required string playerId = 1;
+}
+
+// S_C_TTMY_FINSHING_GRAND_PRIX_PLAYER_INFO_RESPONSE = 0x20041002;  // 大奖赛用户信息响应
+message FishingGrandPrixPlayerInfoResponse {
+    required FishingGrandPrixPlayerInfoMessage playerInfo = 1;
+}
+
+// C_S_TTMY_FINSHING_GRAND_PRIX_RANK_REQUEST = 0x10041003;     // 大奖赛排名请求
+message FishingGrandPrixRankRequest {
+    required int32 rankType = 1;        // 排名类型 1：周排名   2：日排名
+    required int32 pageCurrent = 2;     //当前页码
+    required int32 pageSize = 3;        // 单页大小
+    required int32 total = 4;       // 数据总数
+}
+
+// S_C_TTMY_FINSHING_GRAND_PRIX_RANK_RESPONSE = 0x20041003;     // 大奖赛排名响应
+message FishingGrandPrixRankResponse {
+    required int32 rankType = 1;    // 排名类型
+    repeated FishingGrandPrixPlayerInfoMessage playerInfos = 2;  // 排名玩家列表
+}
+
+// C_S_TTMY_FINSHING_GRAND_PRIX_QUIT_REQUEST = 0x10041004;     // 大奖赛退出房间请求
+message FishingGrandPrixQuitRequest {
+
+}
+
+// S_C_TTMY_FINSHING_GRAND_PRIX_QUIT_RESPONSE = 0x20041004;     // 大奖赛退出房间响应
+message FishingGrandPrixQuitResponse {
+    required int64 playerId = 1;    // 玩家id
+}
+
+
+
+// C_S_TTMY_FISHING_GRAND_PRIX_JOIN_ROOM_REQUEST = 0x10041005; // 加入捕鱼挑战赛房间请求
+message FishingGrandPrixJoinRoomRequest {
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_JOIN_ROOM_RESPONSE = 0x20041005; // 加入捕鱼挑战赛房间响应
+message FishingGrandPrixJoinRoomResponse {
+    optional int32 roomCode = 1; // 房间号
+    optional int32 bullet = 2;  // 子弹数量
+    optional int32 dayPoint = 3; // 当日积分
+}
+
+
+// S_C_TTMY_FISHING_GRAND_PRIX_ROOM_PLAYER_INFO_RESPONSE = 0x20041006; // 发送房间内玩家信息给房间内所有玩家
+message FishingGrandPrixRoomPlayerInfoResponse {
+    optional FishingPlayerInfoMessage playerInfo = 1; // 玩家信息
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_ROOM_PLAYER_INFO_LIST_RESPONSE = 0x20041007; // 发送房间内所有玩家信息给某个玩家
+message FishingGrandPrixRoomPlayerInfoListResponse {
+    repeated FishingPlayerInfoMessage playerInfos = 1; // 所有玩家信息
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_CHANGE_BATTERY_VIEW_REQUEST = 0x10041008; // 捕鱼改变炮台外观请求
+message FishingGrandPrixChangeBatteryViewRequest {
+    optional int32 targetViewIndex = 1; // 目标外观序号
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_CHANGE_BATTERY_VIEW_RESPONSE = 0x20041008; // 捕鱼改变炮台外观返回
+message FishingGrandPrixChangeBatteryViewResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 viewIndex = 2; // 外观序号
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_CHANGE_BATTERY_LEVEL_REQUEST = 0x10041009; // 捕鱼改变炮台等级请求
+message FishingGrandPrixChangeBatteryLevelRequest {
+    optional int32 targetLevel = 1; // 目标等级
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_CHANGE_BATTERY_LEVEL_RESPONSE = 0x20041009; // 捕鱼改变炮台等级返回
+message FishingGrandPrixChangeBatteryLevelResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 level = 2; // 炮台等级
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_FIRE_REQUEST = 0x10041010; // 捕鱼发射子弹请求
+message FishingGrandPrixFireRequest {
+    optional int64 fireId = 1; // 子弹id
+    optional int64 fishId = 2; // 目标id
+    optional float angle = 3; // 子弹角度
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_FIRE_RESPONSE = 0x20041010; // 捕鱼发射子弹返回
+message FishingGrandPrixFireResponse {
+    optional int64 fireId = 1; // 子弹id
+    optional int64 fishId = 2; // 目标id
+    optional float angle = 3; // 子弹角度
+    optional int64 restMoney = 101; // 剩余金币
+    optional int64 playerId = 102; // 玩家id
+    optional int32 bullet = 4;  // 剩余子弹数量
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_FIGHT_FISH_REQUEST = 0x10041011; // 捕鱼击中鱼类请求
+message FishingGrandPrixFightFishRequest {
+    optional int64 fireId = 1; // 子弹id
+    repeated int64 fishId = 2; // 目标id
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_FIGHT_FISH_RESPONSE = 0x20041011; // 捕鱼击中鱼类返回
+message FishingGrandPrixFightFishResponse {
+    optional int64 fishId = 1; // 鱼id
+    optional int64 playerId = 2; // 玩家id
+    optional int64 restMoney = 3; // 剩余金币
+    optional int64 dropMoney = 4; // 掉落金币
+    repeated ItemDataProto dropItems = 5; // 鱼掉落的物品
+    optional int64 multiple = 6; // 鱼的倍数
+    required int32 dayPoint = 7;    // 今日积分
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_REFRESH_FISHES_RESPONSE = 0x20041012; // 捕鱼刷新房间鱼类返回
+message FishingGrandPrixRefreshFishesResponse {
+    repeated FishingGrandPrixFishInfoMessage fishInfos = 1; // 鱼类数据列表
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_SYNCHRONISE_REQUEST = 0x10041013; // 捕鱼同步请求
+message FishingGrandPrixSynchroniseRequest {
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_SYNCHRONISE_RESPONSE = 0x20041013; // 捕鱼同步返回
+message FishingGrandPrixSynchroniseResponse {
+    repeated FishingGrandPrixFishInfoMessage fishInfos = 1; // 鱼类数据列表
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_FISH_TIDE_RESPONSE = 0x20041014; // 捕鱼鱼潮返回
+message FishingGrandPrixFishTideResponse {
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_REACTIVE_REQUEST = 0x10041015; // 捕鱼重新激活请求
+message FishingGrandPrixReactiveRequest {
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_USE_SKILL_REQUEST = 0x10041016; // 捕鱼使用技能请求
+message FishingGrandPrixUseSkillRequest {
+    optional int32 skillId = 1; // 技能id
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_USE_SKILL_RESPONSE = 0x20041016; // 捕鱼使用技能返回
+message FishingGrandPrixUseSkillResponse {
+    optional int64 skillId = 1; // 技能id
+    optional int32 duration = 2; // 持续时间
+    optional int64 playerId = 3; // 玩家id
+    repeated int64 fishIds = 4; // 影响鱼的id列表
+    optional int64 restMoney = 5; // 剩余金币
+    optional int64 dropMoney = 6; // 掉落金币
+    optional int64 skillFishId = 7; // 触发技能的鱼id
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_CATCH_BOSS_FISH_RESPONSE = 0x20041017; // 玩家捕获boss鱼响应
+message FishingGrandPrixCatchBossFishResponse {
+    optional string fishName = 1; // 鱼名称
+    optional int64 money = 2; // boss爆出来的金币
+    optional string playerName = 3; // 玩家昵称
+    optional int32 playerVipLevel = 4; // 玩家vip等级
+    optional int32 batteryLevel = 5; // 炮台等级
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_CATCH_SPECIAL_FISH_REQUEST = 0x10041018; // 捕捉到特殊鱼请求
+message FishingGrandPrixCatchSpecialFishRequest {
+    repeated int64 fishIds = 1; // 特殊鱼所影响的目标鱼id
+    optional int64 specialFishId = 2; // 特殊鱼id
+    optional int64 playerId = 3; // 玩家id
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_CATCH_SPECIAL_FISH_RESPONSE = 0x20041018; // 捕捉到特殊鱼响应
+message FishingGrandPrixCatchSpecialFishResponse {
+    repeated int64 fishIds = 1; // 特殊鱼所影响的目标鱼id
+    optional int64 specialFishId = 2; // 特殊鱼id
+    optional int64 playerId = 3; // 玩家id
+    optional int64 restMoney = 4; // 剩余金币
+    optional int64 dropMoney = 5; // 掉落金币
+}
+
+// C_S_TTMY_FISHING_GRAND_PRIX_USE_BOSS_BUGLE_REQUEST = 0x10041019; // 使用boss号角请求
+message FishingGrandPrixUseBossBugleRequest {
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_USE_BOSS_BUGLE_RESPONSE = 0x20041019; // 使用boss号角响应
+message FishingGrandPrixUseBossBugleResponse {
+    optional int64 playerId = 1; // 使用号角的玩家ID
+}
+
+// S_C_TTMY_FISHING_GRAND_PRIX_REFRESH_BOSS_RESPONSE = 0x20041020; // 房间刷新了boss响应
+message FishingGrandPrixRefreshBossResponse {
+}
+
+
+

@@ -1,0 +1,356 @@
+syntax = "proto2";
+
+import "OseePublicData.proto";
+
+package com.maple.game.osee.proto.fishing;
+
+// C_S_OSEE_FISHING_JOIN_ROOM_REQUEST = 0x10031001; // 捕鱼加入房间请求
+message FishingJoinRoomRequest {
+    optional int32 roomIndex = 1; // 房间序号 1-3
+}
+
+// S_C_OSEE_FISHING_JOIN_ROOM_RESPONSE = 0x20031001; // 捕鱼加入房间返回
+message FishingJoinRoomResponse {
+    optional int32 roomIndex = 1; // 房间序号 1-3
+}
+
+// C_S_OSEE_FISHING_PLAYER_INFO_REQUEST = 0x10031002; // 捕鱼玩家信息请求
+message FishingPlayerInfoRequest {
+    optional int32 seat = 1; // 玩家座位 -1:自己
+}
+
+// S_C_OSEE_FISHING_PLAYER_INFO_RESPONSE = 0x20031002; // 捕鱼玩家信息返回
+message FishingPlayerInfoResponse {
+    optional FishingPlayerInfoProto playerInfo = 1; // 玩家信息
+}
+
+// C_S_OSEE_FISHING_PLAYERS_INFO_REQUEST = 0x10031003; // 捕鱼玩家列表信息请求
+message FishingPlayersInfoRequest {
+}
+
+// S_C_OSEE_FISHING_PLAYERS_INFO_RESPONSE = 0x20031003; // 捕鱼玩家列表信息返回
+message FishingPlayersInfoResponse {
+    repeated FishingPlayerInfoProto playerInfos = 1; // 玩家信息列表
+}
+
+// C_S_OSEE_FISHING_EXIT_ROOM_REQUEST = 0x10031004; // 捕鱼退出房间请求
+message FishingExitRoomRequest {
+}
+
+// S_C_OSEE_FISHING_EXIT_ROOM_RESPONSE = 0x20031004; // 捕鱼退出房间返回
+message FishingExitRoomResponse {
+    optional int64 playerId = 1; // 玩家id
+}
+
+// C_S_OSEE_FISHING_GET_TREASURE_REQUEST = 0x10031005; // 捕鱼获取宝藏请求
+message FishingGetTreasureRequest {
+    optional int32 index = 1; // 宝藏等级 1-6
+    optional int32 drawIndex = 2; // 抽取序号 1-6
+}
+
+// S_C_OSEE_FISHING_GET_TREASURE_RESPONSE = 0x20031005; // 捕鱼获取宝藏返回
+message FishingGetTreasureResponse {
+    optional int32 index = 1; // 宝藏等级 1-6
+    optional int32 drawIndex = 2; // 抽取序号 1-6
+    optional int32 rewardIndex = 3; // 抽中奖品序号 1-6
+}
+
+// C_S_OSEE_FISHING_ROOM_TASK_LIST_REQUEST = 0x10031006; // 捕鱼获取房间任务列表请求
+message FishingRoomTaskListRequest {
+}
+
+// S_C_OSEE_FISHING_ROOM_TASK_LIST_RESPONSE = 0x20031006; // 捕鱼获取房间任务列表返回
+message FishingRoomTaskListResponse {
+    repeated TaskInfoProto taskInfos = 1; // 任务数据列表
+}
+
+// C_S_OSEE_FISHING_GET_ROOM_TASK_REWARD_REQUEST = 0x10031007; // 捕鱼获取房间任务奖励请求
+message FishingGetRoomTaskRewardRequest {
+    optional int64 taskId = 1; // 任务id
+}
+
+// S_C_OSEE_FISHING_GET_ROOM_TASK_REWARD_RESPONSE = 0x20031007; // 捕鱼获取房间任务奖励返回
+message FishingGetRoomTaskRewardResponse {
+    repeated ItemDataProto rewards = 1; // 奖励物品
+    optional int32 rewardMulti = 2; // 任务奖励翻倍倍数
+}
+
+// S_C_OSEE_FISHING_LEVEL_UP_RESPONSE = 0x20031008; // 捕鱼玩家升级返回
+message FishingLevelUpResponse {
+    optional int32 level = 1; // 等级
+    repeated ItemDataProto rewards = 2; // 奖励道具
+}
+
+// C_S_OSEE_FISHING_CHANGE_BATTERY_VIEW_REQUEST = 0x10031009; // 捕鱼改变炮台外观请求
+message FishingChangeBatteryViewRequest {
+    optional int32 targetViewIndex = 1; // 目标外观序号
+}
+
+// S_C_OSEE_FISHING_CHANGE_BATTERY_VIEW_RESPONSE = 0x20031009; // 捕鱼改变炮台外观返回
+message FishingChangeBatteryViewResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 viewIndex = 2; // 外观序号
+}
+
+// C_S_OSEE_FISHING_CHANGE_BATTERY_LEVEL_REQUEST = 0x1003100A; // 捕鱼改变炮台等级请求
+message FishingChangeBatteryLevelRequest {
+    optional int32 targetLevel = 1; // 目标等级
+}
+
+// S_C_OSEE_FISHING_CHANGE_BATTERY_LEVEL_RESPONSE = 0x2003100A; // 捕鱼改变炮台等级返回
+message FishingChangeBatteryLevelResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 level = 2; // 炮台等级
+}
+
+// C_S_OSEE_FISHING_CHANGE_BATTERY_MULT_REQUEST = 0x1003100B; // 捕鱼改变炮台倍数请求
+message FishingChangeBatteryMultRequest {
+    optional int32 targetMult = 1; // 目标倍数
+}
+
+// S_C_OSEE_FISHING_CHANGE_BATTERY_MULT_RESPONSE = 0x2003100B; // 捕鱼改变炮台倍数返回
+message FishingChangeBatteryMultResponse {
+    optional int64 playerId = 1; // 玩家id
+    optional int32 mult = 2; // 炮台倍数
+}
+
+// C_S_OSEE_FISHING_FIRE_REQUEST = 0x1003103C; // 捕鱼发射子弹请求
+message FishingFireRequest {
+    optional int64 fireId = 1; // 子弹id
+    optional int64 fishId = 2; // 目标id
+    optional float angle = 3; // 子弹角度
+}
+
+// S_C_OSEE_FISHING_FIRE_RESPONSE = 0x2003103C; // 捕鱼发射子弹返回
+message FishingFireResponse {
+    optional int64 fireId = 1; // 子弹id
+    optional int64 fishId = 2; // 目标id
+    optional float angle = 3; // 子弹角度
+    optional int64 restMoney = 101; // 剩余金币
+    optional int64 playerId = 102; // 玩家id
+    optional int32 roomGoal = 201; // 房间目标
+}
+
+// C_S_OSEE_FISHING_FIGHT_FISH_REQUEST = 0x1003103D; // 捕鱼击中鱼类请求
+message FishingFightFishRequest {
+    optional int64 fireId = 1; // 子弹id
+    repeated int64 fishId = 2; // 目标id
+}
+
+// S_C_OSEE_FISHING_FIGHT_FISH_RESPONSE = 0x2003103D; // 捕鱼击中鱼类返回
+message FishingFightFishResponse {
+    optional int64 fishId = 1; // 鱼id
+    optional int64 playerId = 2; // 玩家id
+    optional int64 restMoney = 3; // 剩余金币
+    optional int64 dropMoney = 4; // 掉落金币
+    repeated ItemDataProto dropItems = 5; // 鱼掉落的物品
+}
+
+// S_C_OSEE_FISHING_REFRESH_FISHES_RESPONSE = 0x2003100E; // 捕鱼刷新房间鱼类返回
+message FishingRefreshFishesResponse {
+    repeated FishingFishInfoProto fishInfos = 1; // 鱼类数据列表
+}
+
+// C_S_OSEE_FISHING_SYNCHRONISE_REQUEST = 0x1003100F; // 捕鱼同步请求
+message FishingSynchroniseRequest {
+}
+
+// S_C_OSEE_FISHING_SYNCHRONISE_RESPONSE = 0x2003100F; // 捕鱼同步返回
+message FishingSynchroniseResponse {
+    repeated FishingFishInfoProto fishInfos = 1; // 鱼类数据列表
+}
+
+// C_S_TTMY_FISHING_USE_SKILL_REQUEST = 0x10031010; // 捕鱼使用技能请求
+message FishingUseSkillRequest {
+    optional int32 skillId = 1; // 技能id
+}
+
+// S_C_OSEE_FISHING_USE_SKILL_RESPONSE = 0x20031010; // 捕鱼使用技能返回
+message FishingUseSkillResponse {
+    optional int64 skillId = 1; // 技能id
+    optional int32 duration = 2; // 持续时间
+    optional int64 playerId = 3; // 玩家id
+    repeated int64 fishIds = 4; // 影响鱼的id列表
+    optional int64 restMoney = 5; // 剩余金币
+    optional int64 dropMoney = 6; // 掉落金币
+    optional int64 skillFishId = 7; // 触发技能的鱼id
+}
+
+// S_C_OSEE_FISHING_FINISH_ROOM_GOAL_RESPONSE = 0x20031011; // 捕鱼完成房间目标返回
+message FishingFinishRoomGoalResponse {
+    optional ItemDataProto rewardItem = 1; // 奖励道具
+}
+
+// S_C_OSEE_FISHING_FISH_TIDE_RESPONSE = 0x20031012; // 捕鱼鱼潮返回
+message FishingFishTideResponse {
+}
+
+// C_S_OSEE_FISHING_REACTIVE_REQUEST = 0x10031013; // 捕鱼重新激活请求
+message FishingReactiveRequest {
+}
+
+// S_C_OSEE_FISHING_ROBOT_FIRE_RESPONSE = 0x20021101; // 捕鱼机器人发射子弹返回
+message FishingRobotFireResponse {
+    optional int64 fireId = 1; // 子弹id
+    optional int64 fishId = 2; // 目标id
+    optional int64 restMoney = 101; // 剩余金币
+    optional int64 robotId = 102; // 机器人id
+}
+
+// C_S_OSEE_FISHING_ROBOT_FIGHT_FISH_REQUEST = 0x10021102; // 捕鱼机器人击中鱼类请求
+message FishingRobotFightFishRequest {
+    optional int64 fireId = 1; // 子弹id
+    repeated int64 fishId = 2; // 目标id
+    optional int64 robotId = 101; // 机器人id
+}
+
+// C_S_TTMY_FISHING_USE_TORPEDO_REQUEST = 0x10021014; // 使用鱼雷请求
+message FishingUseTorpedoRequest {
+    optional int32 torpedoId = 1; // 鱼雷id
+    optional int32 torpedoNum = 2; // 鱼雷数量
+    optional float angle = 3; // 角度
+}
+
+// S_C_TTMY_FISHING_USE_TORPEDO_RESPONSE = 0x20021014; // 使用鱼雷响应
+message FishingUseTorpedoResponse {
+    optional int32 torpedoId = 1; // 鱼雷id
+    optional int32 torpedoNum = 2; // 鱼雷数量
+    optional float angle = 3; // 角度
+    optional int64 playerId = 4; // 使用鱼雷的玩家id
+    optional int64 money = 5; // 鱼雷爆出的金币数量
+}
+
+// S_C_TTMY_CATCH_BOSS_FISH_RESPONSE = 0x20021015; // 玩家捕获boss鱼响应
+message CatchBossFishResponse {
+    optional string fishName = 1; // 鱼名称
+    optional int64 money = 2; // boss爆出来的金币
+    optional string playerName = 3; // 玩家昵称
+    optional int32 playerVipLevel = 4; // 玩家vip等级
+    optional int32 batteryLevel = 5; // 炮台等级
+}
+
+// C_S_TTMY_UNLOCK_BATTERY_LEVEL_HINT_REQUEST = 0x10021017; // 解锁炮台等级提示请求
+message UnlockBatteryLevelHintRequest {
+}
+
+// S_C_TTMY_UNLOCK_BATTERY_LEVEL_HINT_RESPONSE = 0x20021017; // 解锁炮台等级提示返回
+message UnlockBatteryLevelHintResponse {
+    optional int32 nextLevel = 1; // 要解锁的等级
+    optional int64 cost = 2; // 解锁费用
+    optional ItemDataProto rewardGold = 3; // 解锁成功金币奖励
+}
+
+// C_S_TTMY_UNLOCK_BATTERY_LEVEL_REQUEST = 0x10021016; // 解锁炮台等级请求
+message UnlockBatteryLevelRequest {
+    optional int32 level = 1; // 要解锁的炮台等级
+}
+
+// S_C_TTMY_UNLOCK_BATTERY_LEVEL_RESPONSE = 0x20021016; // 解锁炮台等级响应
+message UnlockBatteryLevelResponse {
+    optional int32 level = 1; // 解锁成功的炮台等级
+    optional ItemDataProto rewardGold = 2; // 解锁成功金币奖励
+}
+
+// C_S_TTMY_CATCH_SPECIAL_FISH_REQUEST = 0x10021018; // 捕捉特殊鱼请求
+message CatchSpecialFishRequest {
+    repeated int64 fishIds = 1; // 特殊鱼所影响的目标鱼id
+    optional int64 specialFishId = 2; // 特殊鱼id
+    optional int64 playerId = 3; // 玩家id
+}
+
+// S_C_TTMY_CATCH_SPECIAL_FISH_RESPONSE = 0x20021018; // 捕捉特殊鱼响应
+message CatchSpecialFishResponse {
+    repeated int64 fishIds = 1; // 特殊鱼所影响的目标鱼id
+    optional int64 specialFishId = 2; // 特殊鱼id
+    optional int64 playerId = 3; // 玩家id
+    optional int64 restMoney = 4; // 剩余金币
+    optional int64 dropMoney = 5; // 掉落金币
+}
+
+// C_S_TTMY_QUICK_START_REQUEST = 0x10021019; // 捕鱼快速开始
+message QuickStartRequest {
+}
+
+// C_S_TTMY_USE_BOSS_BUGLE_REQUEST = 0x10021021; // 使用boss号角请求
+message UseBossBugleRequest {
+}
+
+// S_C_TTMY_USE_BOSS_BUGLE_RESPONSE = 0x20021021; // 使用boss号角响应
+message UseBossBugleResponse {
+    optional int64 playerId = 1; // 使用号角的玩家ID
+}
+
+// ********************************* 捕鱼通用数据 *************************************
+
+// 捕鱼玩家数据
+message FishingPlayerInfoProto {
+    optional int64 playerId = 1; // 玩家id
+    optional string name = 2; // 玩家昵称
+    optional int32 headIndex = 3; // 头像序号
+    optional string headUrl = 4; // 头像地址
+    optional int32 sex = 5; // 性别
+    optional int64 money = 6; // 携带金币
+    optional int32 seat = 7; // 座位
+    optional bool online = 8; // 是否在线
+    optional int32 vipLevel = 9; // vip等级
+    optional int32 viewIndex = 10; // 外观序号
+    optional int32 batteryLevel = 11; // 炮台等级
+    optional int32 batteryMult = 12; // 炮台倍数
+    optional int32 level = 13; // 玩家等级
+}
+
+// 捕鱼鱼类数据
+message FishingFishInfoProto {
+    optional int64 id = 1; // 实例id
+    optional int64 fishId = 2; // 鱼配置id
+    optional int64 routeId = 3; // 路线id
+    optional float clientLifeTime = 101; //客户端存活时间
+    optional int64 createTime = 102; // 创建时间
+}
+
+// 捕鱼子弹数据
+message FishingFireInfoProto {
+    optional int64 playerId = 1; // 玩家id
+    optional float angle = 2; // 子弹角度
+    optional int32 fireLevel = 3; // 子弹等级
+    optional int32 fireMult = 4; // 子弹倍数
+    optional int64 restMoney = 5; // 剩余金币
+    optional int64 target = 6; // 锁定目标id <1:不锁定
+    optional int64 createTime = 7; // 创建时间
+}
+
+// 捕鱼任务数据
+message FishingTaskInfoProto {
+    optional int64 taskId = 1; // 任务id
+    optional string taskName = 2; // 任务名
+    optional int32 nowNum = 3; // 当前已完成数量
+    optional int32 targetNum = 4; // 目标数量
+    repeated ItemDataProto rewards = 5; // 任务奖励
+    optional bool received = 6; // 是否已领取
+    optional int32 imgType = 7; // 任务图标
+}
+
+// C_S_TTMY_FISHING_GET_FIELD_INFO_REQUEST = 0x10021020; // 获取捕鱼场次信息请求
+message FishingGetFieldInfoRequest {
+}
+
+// 场次信息协议
+message FishingFieldInfoProto {
+    optional int32 index = 1; // 场次 1-4
+    optional int64 enterLimit = 2; // 进入金币限制
+    optional int32 batteryLevelLimit = 3; // 最低炮台限制
+}
+
+// S_C_TTMY_FISHING_GET_FIELD_INFO_RESPONSE = 0x20021020; // 获取捕鱼场次信息响应
+message FishingGetFieldInfoResponse {
+    repeated FishingFieldInfoProto fieldInfos = 1;
+}
+
+// C_S_TTMY_IS_IN_FISHING_ROOM_REQUEST = 0x10031042; // 获取是否在捕鱼房间内
+message IsInFishingRoomRequest {
+}
+
+// S_C_TTMY_IS_IN_FISHING_ROOM_RESPONSE = 0x20031042; // 是否在捕鱼房间内响应
+message IsInFishingRoomResponse {
+    optional bool in = 1; // 是否在捕鱼房间内
+}

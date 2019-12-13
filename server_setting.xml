@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<network>
+		<!-- TcpSocket 监听配置 -->
+		<tcpsocket>
+			<port>8011</port>
+			<bossSize>1</bossSize>
+			<workerSize>10</workerSize>
+		</tcpsocket>
+		
+		<!-- UdpSocket 监听配置 -->
+		<udpsocket>
+			<port>8111</port>
+			<bossSize>1</bossSize>
+			<workerSize>10</workerSize>
+		</udpsocket>
+
+		<!-- Http 监听配置 -->
+		<http>
+			<port>8021</port>
+			<bossSize>1</bossSize>
+			<workerSize>10</workerSize>
+		</http>
+
+		<!-- WebSocket 监听配置 -->
+		<websocket>
+			<port>8031</port>
+			<bossSize>1</bossSize>
+			<workerSize>10</workerSize>
+		</websocket>
+	</network>
+	
+	<server>
+		<nickname>
+			<limit>1</limit>
+		</nickname>
+	</server>
+</settings>
